@@ -5,4 +5,7 @@
     <string name="etMailLogin">Inserta tu correo electronico</string>
     <string name="etPasswordLogin">Inserta tu contraseña</string>
     <string name="loginLogin">Logo Principal</string>
+    <string name="etNombreRegistro">Inserta tu nombre</string>
+    <string name="btnRegistro">Registrar</string>
+    <string name="tvPassOlvidada">¿Has olvidado la contraseña? ¡Click Aquí!</string>
 </resources>

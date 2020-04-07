@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".Registro">
 
     <ImageView
         android:id="@+id/logoLogin"
@@ -18,8 +18,39 @@
         app:layout_constraintVertical_bias="0.131"
         app:srcCompat="@drawable/logo" />
 
+    <Button
+        android:id="@+id/btnRegistro"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/btnRegistro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.868"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPasswordRegistro"
+        app:layout_constraintVertical_bias="0.100000024" />
+
     <EditText
-        android:id="@+id/etMailLogin"
+        android:id="@+id/etNombreRegistro"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:ems="10"
+        android:hint="@string/etNombreRegistro"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logoLogin"
+        app:layout_constraintVertical_bias="0.100000024"
+        android:autofillHints="" />
+
+    <EditText
+        android:id="@+id/etCorreoRegistro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -29,13 +60,14 @@
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoLogin"
-        app:layout_constraintVertical_bias="0.177"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/etNombreRegistro"
+        app:layout_constraintVertical_bias="0.09"
+        android:autofillHints="" />
 
     <EditText
-        android:id="@+id/etPasswordLogin"
+        android:id="@+id/etPasswordRegistro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -47,48 +79,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etMailLogin"
-        app:layout_constraintVertical_bias="0.043"
-        android:importantForAutofill="no" />
-
-    <TextView
-        android:id="@+id/tvRegister"
-        android:layout_width="168dp"
-        android:layout_height="45dp"
-        android:gravity="center"
-        android:text="@string/tvRegister"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.131"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPasswordLogin"
-        app:layout_constraintVertical_bias="0.058" />
-
-    <Button
-        android:id="@+id/btnLoguear"
-        android:layout_width="168dp"
-        android:layout_height="45dp"
-        android:text="@string/btnLoguear"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.868"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPasswordLogin"
-        app:layout_constraintVertical_bias="0.058" />
-
-    <TextView
-        android:id="@+id/tvPassOlvidada"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:gravity="center"
-        android:text="@string/tvPassOlvidada"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLoguear"
-        app:layout_constraintVertical_bias="0.10" />
+        app:layout_constraintTop_toBottomOf="@+id/etCorreoRegistro"
+        app:layout_constraintVertical_bias="0.10"
+        android:autofillHints="" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
