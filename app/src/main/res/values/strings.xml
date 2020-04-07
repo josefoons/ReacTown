@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ReacTown</string>
+    <string name="btnLoguear">Iniciar Sesion</string>
+    <string name="tvRegister">¿No tienes cuenta? ¡CREALA!</string>
+    <string name="etMailLogin">Inserta tu correo electronico</string>
+    <string name="etPasswordLogin">Inserta tu contraseña</string>
+    <string name="loginLogin">Logo Principal</string>
 </resources>
