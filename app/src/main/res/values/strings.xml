@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">ReacTown</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="btnLoguear">Iniciar Sesion</string>
+    <string name="tvRegister">¿No tienes cuenta? ¡CREALA!</string>
+    <string name="etMailLogin">Inserta tu correo electronico</string>
+    <string name="etPasswordLogin">Inserta tu contraseña</string>
+    <string name="loginLogin">Logo Principal</string>
+    <string name="etNombreRegistro">Inserta tu nombre</string>
+    <string name="btnRegistro">Registrar</string>
+    <string name="tvPassOlvidada">¿Has olvidado la contraseña? ¡Click Aquí!</string>
 </resources>

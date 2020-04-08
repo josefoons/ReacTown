@@ -36,15 +36,6 @@ public class MainFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         // TODO: Use the ViewModel
-
-        Button nose = getView().findViewById(R.id.boton);
-        nose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.mainToRegistro);
-                //MainFragmentDirections.mainToRegistro()
-            }
-        });
     }
 
 }
