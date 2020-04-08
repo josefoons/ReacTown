@@ -13,10 +13,22 @@
         <action
             android:id="@+id/mainToRegistro"
             app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/loginCompleto"
+            app:destination="@id/listado" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
         android:name="es.josefons.reactown.RegisterFragment"
         android:label="fragment_register2"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/registroCompleto"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listado"
+        android:name="es.josefons.reactown.Listado"
+        android:label="fragment_listado"
+        tools:layout="@layout/fragment_listado" />
 </navigation>
