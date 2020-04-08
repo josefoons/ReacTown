@@ -1,5 +1,6 @@
 package es.josefons.reactown.ui.main;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
@@ -57,7 +58,6 @@ public class MainFragment extends Fragment {
         etPass = getView().findViewById(R.id.etPasswordLogin);
         btnLogin = getView().findViewById(R.id.btnLoguear);
         textoRegistro = getView().findViewById(R.id.tvRegister);
-
         mAuth = FirebaseAuth.getInstance();
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +68,8 @@ public class MainFragment extends Fragment {
 
                 if(!email.isEmpty() && !password.isEmpty()){
                     loginUser();
+                } else {
+                    Toast.makeText(getView().getContext(), "Completa los campos", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -87,9 +89,27 @@ public class MainFragment extends Fragment {
                 if(task.isSuccessful()){
                     //TODO Aqui el boton de ir a la pantalla principal cuando estas logued
                     Navigation.findNavController(getView()).navigate(R.id.loginCompleto);
+                } else {
+
+                    Toast.makeText(getView().getContext(), "Fallo al loguear", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (mAuth.getCurrentUser() == null) {
+                    // TODO Deshabilitado el back a la anterior para que no vuelva al listado.
+                }
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+
+    }
 }

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -131,6 +132,8 @@ public class RegisterFragment extends Fragment {
                         public void onComplete(@NonNull Task<Void> task2) {
                             if(task2.isSuccessful()) {
                                 Navigation.findNavController(getView()).navigate(R.id.registroCompleto);
+                            } else {
+                                Toast.makeText(getView().getContext(), "Fallo al registrar", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -138,13 +141,4 @@ public class RegisterFragment extends Fragment {
             }
         });
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if(mAuth.getCurrentUser() != null) {
-            Navigation.findNavController(getView()).navigate(R.id.loginCompleto);
-        }
-    }
-
 }
