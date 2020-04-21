@@ -11,10 +11,11 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -35,7 +36,6 @@ public class Listado extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private Button botonBack;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
@@ -90,6 +90,7 @@ public class Listado extends Fragment {
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -103,8 +104,23 @@ public class Listado extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
-
         //TODO CODIGO AQUI
+    }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_listado, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.menuLogOut: System.out.println("Menu 1"); break;
+            case R.id.menuAddList: System.out.println("Menu 2"); break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
