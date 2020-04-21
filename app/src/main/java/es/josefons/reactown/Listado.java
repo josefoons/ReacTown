@@ -1,5 +1,7 @@
 package es.josefons.reactown;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -70,7 +72,21 @@ public class Listado extends Fragment {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Toast.makeText(getView().getContext(),"OnBackpress Click", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getView().getContext(),"OnBackpress Click", Toast.LENGTH_LONG).show();
+                AlertDialog alertbox = new AlertDialog.Builder(getView().getContext())
+                        .setMessage("¿Quieres salir de la cuenta?")
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                mAuth.signOut();
+                                Navigation.findNavController(getView()).navigate(R.id.logout);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                //
+                            }
+                        })
+                        .show();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
@@ -86,16 +102,9 @@ public class Listado extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        botonBack = view.findViewById(R.id.btnLogout);
         mAuth = FirebaseAuth.getInstance();
 
-        botonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAuth.signOut();
-                Navigation.findNavController(getView()).navigate(R.id.logout);
-            }
-        });
+        //TODO CODIGO AQUI
 
     }
 }

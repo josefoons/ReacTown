@@ -105,7 +105,7 @@ public class MainFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 if (mAuth.getCurrentUser() == null) {
-                    // TODO Deshabilitado el back a la anterior para que no vuelva al listado.
+                    // Evitar que haga nada...
                 }
             }
         };
