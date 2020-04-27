@@ -1,11 +1,35 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>-->
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/red200</item>
+        <item name="colorPrimaryDark">@color/red300</item>
+        <item name="colorPrimaryVariant">@color/red300</item>
+        <item name="colorAccent">@color/red700</item>
+        <item name="colorSecondary">@color/red700</item>
+        <item name="colorError">@color/red900</item>
+        <item name="android:colorBackground">@color/A100</item>
+
+        <item name="colorOnPrimary">@color/testColor</item>
+        <item name="colorOnSecondary">@color/testColor</item>
+        <item name="colorOnBackground">@color/red700</item>
+        <item name="colorOnSurface">@color/red700</item>
+        <item name="colorOnError">@color/testColor</item>
+
     </style>
 
+    <style name="AppTheme.Toolbar" parent="AppTheme">
+        <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
+        <item name="android:textColorSecondary">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
