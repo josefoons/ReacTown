@@ -1,6 +1,7 @@
 package es.josefons.reactown.ui.main;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
@@ -53,6 +54,8 @@ public class MainFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
 
         etCorreo = getView().findViewById(R.id.etMailLogin);
         etPass = getView().findViewById(R.id.etPasswordLogin);

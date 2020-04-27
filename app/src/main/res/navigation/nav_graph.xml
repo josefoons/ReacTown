@@ -34,5 +34,13 @@
         <action
             android:id="@+id/logout"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/anyadirItem"
+            app:destination="@id/anyadirListado" />
     </fragment>
+    <fragment
+        android:id="@+id/anyadirListado"
+        android:name="es.josefons.reactown.AnyadirListado"
+        android:label="fragment_anyadir_listado"
+        tools:layout="@layout/fragment_anyadir_listado" />
 </navigation>

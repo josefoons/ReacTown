@@ -14,4 +14,11 @@
     <string name="tvYaCuenta">¿Ya tienes cuenta? ¡Click Aquí!</string>
     <string name="menuLogOut">logOut</string>
     <string name="menuAddList">addList</string>
+    <string name="nombreSugerencia">Nombre Sugerencia</string>
+    <string name="etNombreSugerencia">Nombre descriptivo</string>
+    <string name="tvDescripcion">Descripcion</string>
+
+    <string name="etDescripcion">Describe tu sugerencia</string>
+    <string name="btnInsertarDescripcion">Insertar descripcion</string>
+    <string name="btnSubirArchivo">SELECT</string>
 </resources>
