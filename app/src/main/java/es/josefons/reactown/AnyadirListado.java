@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,32 +18,53 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.nio.file.FileStore;
 
 public class AnyadirListado extends Fragment {
-
-    //https://www.youtube.com/watch?v=6w4bx76Mgoc
+    //https://www.youtube.com/watch?v=lPfQN-Sfnjw
 
     FirebaseAuth mAuth;
-    FirebaseDatabase mDatabase;
+    StorageReference mStorageRef;
+    DatabaseReference mDatabaseRef;
+    StorageTask mUploadTask;
+    Uri imagenUri;
+
     int Gallary_intent = 2000;
-    Button btnSubirImagen, btnInsertarDescripcion;
+    Button btnInsertarDescripcion;
     ImageView imagenSubir;
     EditText etNombreSugerencia, etDescripcionSugerencia;
-    ProgressDialog progressDialog;
+    ProgressBar procesoSubida;
 
     public AnyadirListado() {
     }
@@ -62,20 +84,31 @@ public class AnyadirListado extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance();
-        btnSubirImagen = getView().findViewById(R.id.btnSubirImagen);
         btnInsertarDescripcion = getView().findViewById(R.id.btnInsertarDescripcion);
         imagenSubir = getView().findViewById(R.id.imagenSugerenciaSubir);
         etNombreSugerencia = getView().findViewById(R.id.etNombreSugerencia);
         etDescripcionSugerencia = getView().findViewById(R.id.etDescripcionSugerencia);
-        progressDialog = new ProgressDialog(getContext());
+        procesoSubida = getView().findViewById(R.id.procesoSubida);
 
+        mStorageRef = FirebaseStorage.getInstance().getReference("imgItems");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("itemListado");
 
-        btnSubirImagen.setOnClickListener(new View.OnClickListener() {
+        imagenSubir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, Gallary_intent);
+            }
+        });
+
+        btnInsertarDescripcion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mUploadTask != null && mUploadTask.isInProgress())  {
+                    Toast.makeText(getContext(), "Subida en progreso", Toast.LENGTH_SHORT).show();
+                } else {
+                    uploadFile();
+                }
             }
         });
     }
@@ -84,8 +117,63 @@ public class AnyadirListado extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode,data);
         if(requestCode == Gallary_intent && resultCode == Activity.RESULT_OK) {
-            Uri uri = data.getData();
-            imagenSubir.setImageURI(uri);
+            imagenUri = data.getData();
+            imagenSubir.setImageURI(imagenUri);
+        }
+    }
+
+    private String getFileExtension(Uri uri) {
+        //Obtener file extension
+        ContentResolver cR = getActivity().getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void uploadFile() {
+        if(imagenUri != null && !etNombreSugerencia.getText().toString().isEmpty() && !etDescripcionSugerencia.getText().toString().isEmpty()) {
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(imagenUri));
+
+            mUploadTask = fileReference.putFile(imagenUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(getContext(), "Subida correctamente", Toast.LENGTH_SHORT).show();
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                            Upload upload = new Upload();
+                            upload.setPropuestaNombre(etNombreSugerencia.getText().toString().trim());
+                            upload.setPropuestaDescripcion(etDescripcionSugerencia.getText().toString().trim());
+                            upload.setPropuestaImagen(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+                            upload.setPropuestaUsuario(user.getEmail());
+
+                            String uploadId = mDatabaseRef.push().getKey();
+                            mDatabaseRef.child(uploadId).setValue(upload);
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Navigation.findNavController(getView()).navigate(R.id.AnyadidoCompletado);
+                                }
+                            }, 1500);
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()); // Para calcular el progreso de la subida
+                            procesoSubida.setProgress((int) progress);
+
+                        }
+                    });
+        } else {
+            Toast.makeText(getContext(), "Completa los campos.", Toast.LENGTH_LONG).show();
         }
     }
 }

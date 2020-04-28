@@ -22,19 +22,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/imagenSugerenciaSubir"
-            android:layout_width="150dp"
+            android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_gravity="center"
             android:src="@drawable/fondo_item_listado" />
 
-        <Button
-            android:id="@+id/btnSubirImagen"
+        <ProgressBar
+            android:id="@+id/procesoSubida"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btnSubirArchivo" />
-
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:layout_marginTop="10dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -109,7 +110,9 @@
         android:text="@string/btnInsertarDescripcion"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/zonaDescripcion" />
+        app:layout_constraintTop_toBottomOf="@+id/zonaDescripcion"
+        app:layout_constraintVertical_bias="0.892" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

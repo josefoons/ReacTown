@@ -42,5 +42,9 @@
         android:id="@+id/anyadirListado"
         android:name="es.josefons.reactown.AnyadirListado"
         android:label="fragment_anyadir_listado"
-        tools:layout="@layout/fragment_anyadir_listado" />
+        tools:layout="@layout/fragment_anyadir_listado" >
+        <action
+            android:id="@+id/AnyadidoCompletado"
+            app:destination="@id/listado" />
+    </fragment>
 </navigation>
