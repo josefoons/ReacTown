@@ -34,12 +34,10 @@ public class ItemListadoAdapter extends RecyclerView.Adapter<ItemListadoAdapter.
 
     @Override
     public void onBindViewHolder(ItemListadoViewHolder holder, int position) {
-        //holder.icono.setImageResource(listado.get(position).getIcon());   <--------- DESCOMENTAR
         holder.nombre.setText(listado.get(position).getName());
-        holder.autor.setText(listado.get(position).getAutor());
         Picasso.get()
                 .load(listado.get(position).getIcon())
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.drawable.placeholder_loading)
                 .into(holder.icono);
     }
 
@@ -50,13 +48,12 @@ public class ItemListadoAdapter extends RecyclerView.Adapter<ItemListadoAdapter.
 
     public class ItemListadoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView icono;
-        TextView nombre, autor;
+        TextView nombre;
 
         public ItemListadoViewHolder (View view) {
             super(view);
             icono = view.findViewById(R.id.listadoIcon);
             nombre = view.findViewById(R.id.listadoName);
-            autor = view.findViewById(R.id.listadoAutor);
         }
 
         @Override

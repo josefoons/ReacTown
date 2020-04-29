@@ -110,7 +110,6 @@ public class Listado extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     ItemListado aux = new ItemListado();
                     aux.setId(snapshot.getKey());
-                    aux.setAutor(snapshot.child("propuestaUsuario").getValue().toString());
                     aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
                     aux.setName(snapshot.child("propuestaNombre").getValue().toString());
                     listadoList.add(aux);
