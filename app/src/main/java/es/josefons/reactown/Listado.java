@@ -33,21 +33,17 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Listado extends Fragment implements ItemClickListener {
+public class Listado extends Fragment {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private FirebaseDatabase database;
     private TextView tvInformacionUsuarioListado;
     private Usuario usuario;
 
-    /* AUXILIAR */
-    int[] iconList = {R.drawable.common_full_open_on_phone, R.drawable.common_google_signin_btn_icon_dark_focused};
-    String[] nameList = {"nombre1", "nombnre2"};
-    String[] autorList = {"autor1", "autor2"};
-     /* --------------- */
     RecyclerView recyclerView;
     ItemListadoAdapter itemListadoAdapter;
-    List<ItemListado> listadoList = new ArrayList<>();
+    List<ItemListado> listadoList;
 
     public Listado() {
         // Required empty public constructor
@@ -98,6 +94,7 @@ public class Listado extends Fragment implements ItemClickListener {
         getUserInfo();
 
         /* Recycler */
+        listadoList = new ArrayList<>();
         recyclerView = view.findViewById(R.id.recyclerView);
         itemListadoAdapter = new ItemListadoAdapter(listadoList, getContext());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
@@ -105,17 +102,28 @@ public class Listado extends Fragment implements ItemClickListener {
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(itemListadoAdapter);
-        itemListadoAdapter.setItemClickListener(this);
-        itemListadoAdapter.notifyDataSetChanged();
 
-        for (int i = 0; i < iconList.length; i++) {
-            String name = nameList[i];
-            String autor = autorList[i];
-            int icon = iconList[i];
+        mDatabase.child("itemListado").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listadoList.removeAll(listadoList);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    ItemListado aux = new ItemListado();
+                    aux.setId(snapshot.getKey());
+                    aux.setAutor(snapshot.child("propuestaUsuario").getValue().toString());
+                    aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
+                    aux.setName(snapshot.child("propuestaNombre").getValue().toString());
+                    listadoList.add(aux);
+                }
+                itemListadoAdapter.notifyDataSetChanged();
+            }
 
-            ItemListado itemaux = new ItemListado(Integer.toString(i), icon, name, autor);
-            listadoList.add(itemaux);
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         /* Recycler */
     }
 
@@ -133,14 +141,6 @@ public class Listado extends Fragment implements ItemClickListener {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onClick(View view, int position) {
-        String id = listadoList.get(position).getId();
-        String name = listadoList.get(position).getName();
-
-        Toast.makeText(view.getContext(), name, Toast.LENGTH_SHORT).show();
     }
 
     private void getUserInfo(){

@@ -7,8 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -23,13 +24,6 @@ public class ItemListadoAdapter extends RecyclerView.Adapter<ItemListadoAdapter.
         this.contexto = contexto;
     }
 
-   /* @NonNull
-    @Override
-    public ItemListadoAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(contexto).inflate(R.layout.layout_item_listado, parent, false);
-        return new ItemListadoAdapter(itemView);
-    }*/
-
     @Override
     public ItemListadoAdapter.ItemListadoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(contexto).inflate(R.layout.layout_item_listado, parent, false);
@@ -37,22 +31,16 @@ public class ItemListadoAdapter extends RecyclerView.Adapter<ItemListadoAdapter.
         return vh;
     }
 
-    /*@Override
-    public void onBindViewHolder(@NonNull ItemListadoAdapter.ItemListadoViewHolder holder, int position) {
-        holder.icono.setImageResource(listado.get(position).getIcon());
-        holder.nombre.setText(listado.get(position).getName());
-        holder.autor.setText(listado.get(position).getAutor());
-    }*/
 
     @Override
     public void onBindViewHolder(ItemListadoViewHolder holder, int position) {
-        holder.icono.setImageResource(listado.get(position).getIcon());
+        //holder.icono.setImageResource(listado.get(position).getIcon());   <--------- DESCOMENTAR
         holder.nombre.setText(listado.get(position).getName());
         holder.autor.setText(listado.get(position).getAutor());
-    }
-
-    public void setItemClickListener(ItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+        Picasso.get()
+                .load(listado.get(position).getIcon())
+                .placeholder(R.mipmap.ic_launcher)
+                .into(holder.icono);
     }
 
     @Override
@@ -73,9 +61,6 @@ public class ItemListadoAdapter extends RecyclerView.Adapter<ItemListadoAdapter.
 
         @Override
         public void onClick(View view) {
-            if(itemClickListener != null) {
-                itemClickListener.onClick(view, getAdapterPosition());
-            }
         }
     }
 }

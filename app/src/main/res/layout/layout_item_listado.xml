@@ -10,7 +10,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:scaleType="centerCrop"
-        android:background="@drawable/fondo_item_listado"
         android:padding="5dp"/>
 
     <TextView

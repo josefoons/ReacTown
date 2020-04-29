@@ -2,10 +2,11 @@ package es.josefons.reactown;
 
 public class ItemListado {
 
-    private int icon;
-    private String id, name, autor;
+    private String id, name, autor, icon;
 
-    public ItemListado(String id, int icon, String name, String autor) {
+    public ItemListado() {}
+
+    public ItemListado(String id, String icon, String name, String autor) {
         this.id = id;
         this.icon = icon;
         this.name = name;
@@ -18,14 +19,6 @@ public class ItemListado {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public int getIcon() {
-        return icon;
-    }
-
-    public void setIcon(int icon) {
-        this.icon = icon;
     }
 
     public String getName() {
@@ -42,5 +35,13 @@ public class ItemListado {
 
     public void setAutor(String autor) {
         this.autor = autor;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

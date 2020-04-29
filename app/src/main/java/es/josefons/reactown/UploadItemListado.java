@@ -1,15 +1,15 @@
 package es.josefons.reactown;
 
-public class Upload {
+public class UploadItemListado {
     private String propuestaNombre;
     private String propuestaUsuario;
     private String propuestaDescripcion;
     private String propuestaImagen;
 
-    public Upload() {
+    public UploadItemListado() {
     }
 
-    public Upload(String propuestaNombre, String propuestaUsuario, String propuestaDescripcion, String propuestaImagen) {
+    public UploadItemListado(String propuestaNombre, String propuestaUsuario, String propuestaDescripcion, String propuestaImagen) {
         this.propuestaNombre = propuestaNombre;
         this.propuestaUsuario = propuestaUsuario;
         this.propuestaDescripcion = propuestaDescripcion;
