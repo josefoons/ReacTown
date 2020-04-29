@@ -1,28 +1,17 @@
 package es.josefons.reactown;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import android.os.Handler;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,23 +22,19 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-
-import java.io.IOException;
-import java.nio.file.FileStore;
 
 public class AnyadirListado extends Fragment {
     //https://www.youtube.com/watch?v=lPfQN-Sfnjw
@@ -136,18 +121,23 @@ public class AnyadirListado extends Fragment {
             mUploadTask = fileReference.putFile(imagenUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
                             Toast.makeText(getContext(), "Subida correctamente", Toast.LENGTH_SHORT).show();
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    UploadItemListado upload = new UploadItemListado();
+                                    upload.setPropuestaNombre(etNombreSugerencia.getText().toString().trim());
+                                    upload.setPropuestaDescripcion(etDescripcionSugerencia.getText().toString().trim());
+                                    upload.setPropuestaImagen(uri.toString());
+                                    upload.setPropuestaUsuario(user.getEmail());
 
-                            Upload upload = new Upload();
-                            upload.setPropuestaNombre(etNombreSugerencia.getText().toString().trim());
-                            upload.setPropuestaDescripcion(etDescripcionSugerencia.getText().toString().trim());
-                            upload.setPropuestaImagen(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
-                            upload.setPropuestaUsuario(user.getEmail());
+                                    String uploadId = mDatabaseRef.push().getKey();
+                                    mDatabaseRef.child(uploadId).setValue(upload);
+                                }
+                            });
 
-                            String uploadId = mDatabaseRef.push().getKey();
-                            mDatabaseRef.child(uploadId).setValue(upload);
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
