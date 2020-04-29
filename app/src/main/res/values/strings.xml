@@ -21,4 +21,7 @@
     <string name="etDescripcion">Describe tu sugerencia</string>
     <string name="btnInsertarDescripcion">Insertar descripcion</string>
     <string name="btnSubirArchivo">SELECT</string>
+    <string name="btnRecuperar">Enviar Recuperacion</string>
+    <string name="textoRecuperacion">Introduce tu email. Si existe en el sistema, te llegara un correo.</string>
+    <string name="btnVolver">Volver</string>
 </resources>

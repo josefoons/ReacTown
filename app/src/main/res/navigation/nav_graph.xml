@@ -16,6 +16,9 @@
         <action
             android:id="@+id/loginCompleto"
             app:destination="@id/listado" />
+        <action
+            android:id="@+id/irRecuperar"
+            app:destination="@id/recuperarPassword" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -46,5 +49,14 @@
         <action
             android:id="@+id/AnyadidoCompletado"
             app:destination="@id/listado" />
+    </fragment>
+    <fragment
+        android:id="@+id/recuperarPassword"
+        android:name="es.josefons.reactown.RecuperarPassword"
+        android:label="fragment_recuperar_password"
+        tools:layout="@layout/fragment_recuperar_password" >
+        <action
+            android:id="@+id/volverRecuperar"
+            app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

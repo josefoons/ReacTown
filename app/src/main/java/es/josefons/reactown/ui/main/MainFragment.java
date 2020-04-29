@@ -32,7 +32,7 @@ public class MainFragment extends Fragment {
     private MainViewModel mViewModel;
     private EditText etCorreo, etPass;
     private Button btnLogin;
-    private TextView textoRegistro;
+    private TextView textoRegistro, textoOlvidado;
 
     private String email = "";
     private String password = "";
@@ -61,6 +61,7 @@ public class MainFragment extends Fragment {
         etPass = getView().findViewById(R.id.etPasswordLogin);
         btnLogin = getView().findViewById(R.id.btnLoguear);
         textoRegistro = getView().findViewById(R.id.tvRegister);
+        textoOlvidado = getView().findViewById(R.id.tvPassOlvidada);
         mAuth = FirebaseAuth.getInstance();
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +82,13 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(v).navigate(R.id.mainToRegistro);
+            }
+        });
+
+        textoOlvidado.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.irRecuperar);
             }
         });
     }
