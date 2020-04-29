@@ -22,11 +22,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterFragment extends Fragment {
-
     private EditText etNombre, etCorreo, etPass;
     private Button btnRegistrar;
     private TextView alreadyAccount;
@@ -36,6 +36,11 @@ public class RegisterFragment extends Fragment {
 
     public RegisterFragment() {
         // Required empty public constructor
+    }
+
+    public static RegisterFragment newInstance(String param1, String param2) {
+        RegisterFragment fragment = new RegisterFragment();
+        return fragment;
     }
 
     @Override
@@ -94,7 +99,7 @@ public class RegisterFragment extends Fragment {
                     Map<String, Object> map = new HashMap<>();
                     map.put("name", etNombre.getText().toString());
                     map.put("correo", etCorreo.getText().toString());
-                    map.put("password", etPass.getText().toString());
+                    map.put("password", sha256(etPass.getText().toString()));
                     map.put("perm", 0);
 
                     String id = mAuth.getCurrentUser().getUid();
@@ -111,5 +116,23 @@ public class RegisterFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private static String sha256(String base) {
+        try{
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(base.getBytes("UTF-8"));
+            StringBuffer hexString = new StringBuffer();
+
+            for (int i = 0; i < hash.length; i++) {
+                String hex = Integer.toHexString(0xff & hash[i]);
+                if(hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+
+            return hexString.toString();
+        } catch(Exception ex){
+            throw new RuntimeException(ex);
+        }
     }
 }
