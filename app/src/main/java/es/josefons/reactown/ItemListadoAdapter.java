@@ -13,11 +13,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ItemListadoAdapter extends RecyclerView.Adapter<ItemListadoAdapter.ItemListadoViewHolder> {
+public class ItemListadoAdapter extends RecyclerView.Adapter<ItemListadoAdapter.ItemListadoViewHolder> implements View.OnClickListener{
 
     private List<ItemListado> listado;
     private Context contexto;
-    private ItemClickListener itemClickListener;
+    private View.OnClickListener listener;
 
     public ItemListadoAdapter(List<ItemListado> listado, Context contexto) {
         this.listado = listado;
@@ -28,6 +28,7 @@ public class ItemListadoAdapter extends RecyclerView.Adapter<ItemListadoAdapter.
     public ItemListadoAdapter.ItemListadoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(contexto).inflate(R.layout.layout_item_listado, parent, false);
         ItemListadoViewHolder vh = new ItemListadoViewHolder(itemView);
+        itemView.setOnClickListener(this);
         return vh;
     }
 
@@ -38,12 +39,25 @@ public class ItemListadoAdapter extends RecyclerView.Adapter<ItemListadoAdapter.
         Picasso.get()
                 .load(listado.get(position).getIcon())
                 .placeholder(R.drawable.placeholder_loading)
+                .centerCrop()
+                .fit()
                 .into(holder.icono);
     }
 
     @Override
     public int getItemCount() {
         return listado.size();
+    }
+
+    public void setOnClickListener(View.OnClickListener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(listener != null) {
+            listener.onClick(v);
+        }
     }
 
     public class ItemListadoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -58,6 +72,7 @@ public class ItemListadoAdapter extends RecyclerView.Adapter<ItemListadoAdapter.
 
         @Override
         public void onClick(View view) {
+
         }
     }
 }

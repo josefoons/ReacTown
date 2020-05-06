@@ -40,6 +40,9 @@
         <action
             android:id="@+id/anyadirItem"
             app:destination="@id/anyadirListado" />
+        <action
+            android:id="@+id/volverMainRecycler"
+            app:destination="@id/infoRecycler" />
     </fragment>
     <fragment
         android:id="@+id/anyadirListado"
@@ -58,5 +61,14 @@
         <action
             android:id="@+id/volverRecuperar"
             app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/infoRecycler"
+        android:name="es.josefons.reactown.InfoRecycler"
+        android:label="fragment_info_recycler"
+        tools:layout="@layout/fragment_info_recycler" >
+        <action
+            android:id="@+id/cargar_info"
+            app:destination="@id/listado" />
     </fragment>
 </navigation>
