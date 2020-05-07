@@ -126,7 +126,10 @@ public class Listado extends Fragment {
         itemListadoAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //System.out.println("HOLAAAAAAAAAAAAAA ->>>>>" + listadoList.get(recyclerView.getChildAdapterPosition(v)).getName());
+                Bundle datos = new Bundle();
+                String aux = listadoList.get(recyclerView.getChildAdapterPosition(v)).getId();
+                datos.putString("id", aux);
+                Navigation.findNavController(getView()).navigate(R.id.infoRecycler, datos);
             }
         });
 
