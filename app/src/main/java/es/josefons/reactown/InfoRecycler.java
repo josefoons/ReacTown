@@ -1,10 +1,14 @@
 package es.josefons.reactown;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +30,7 @@ public class InfoRecycler extends Fragment {
     private String ID_TRAIDO = "";
     private ImageView imgTotal;
     private TextView titulo, autor, desc;
-    private Button volver, compartir;
+    private Button volver;
     private DatabaseReference mDatabase;
     FirebaseDatabase database;
 
@@ -41,6 +45,14 @@ public class InfoRecycler extends Fragment {
         if (bundle != null) {
             ID_TRAIDO = bundle.getString("id", "");
         }
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                //
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -60,10 +72,15 @@ public class InfoRecycler extends Fragment {
         autor = view.findViewById(R.id.InfoRecyAutor);
         desc = view.findViewById(R.id.InfoRecyInformacion);
         volver = view.findViewById(R.id.btnInfoRecyVolver);
-        compartir = view.findViewById(R.id.btnInfoRecyShare);
 
         cargarInfo();
 
+        volver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(getView()).navigate(R.id.volverMainRecycler);
+            }
+        });
     }
 
     private void cargarInfo(){
@@ -71,10 +88,6 @@ public class InfoRecycler extends Fragment {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-/*
-                    aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
-                    aux.setName(snapshot.child("propuestaNombre").getValue().toString());
- */
                 titulo.setText(dataSnapshot.child("propuestaNombre").getValue().toString());
                 autor.setText(dataSnapshot.child("propuestaUsuario").getValue().toString());
                 desc.setText(dataSnapshot.child("propuestaDescripcion").getValue().toString());
@@ -92,4 +105,6 @@ public class InfoRecycler extends Fragment {
             }
         });
     }
+
+
 }
