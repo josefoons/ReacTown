@@ -43,6 +43,9 @@
         <action
             android:id="@+id/cargarRecyclerInfo"
             app:destination="@id/infoRecycler" />
+        <action
+            android:id="@+id/irPanelUsuario"
+            app:destination="@id/panelUsuario" />
     </fragment>
     <fragment
         android:id="@+id/anyadirListado"
@@ -69,6 +72,15 @@
         tools:layout="@layout/fragment_info_recycler" >
         <action
             android:id="@+id/volverMainRecycler"
+            app:destination="@id/listado" />
+    </fragment>
+    <fragment
+        android:id="@+id/panelUsuario"
+        android:name="es.josefons.reactown.PanelUsuario"
+        android:label="fragment_panel_usuario"
+        tools:layout="@layout/fragment_panel_usuario" >
+        <action
+            android:id="@+id/volverPanelUsuario"
             app:destination="@id/listado" />
     </fragment>
 </navigation>

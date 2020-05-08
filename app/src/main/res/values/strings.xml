@@ -25,4 +25,5 @@
     <string name="textoRecuperacion">Introduce tu email. Si existe en el sistema, te llegara un correo.</string>
     <string name="btnVolver">Volver</string>
     <string name="btnInfoRecyVolver">Volver</string>
+    <string name="menuPanelUsuario">Editar Usuario</string>
 </resources>
