@@ -17,14 +17,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/imageView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginRight="5dp"
+            android:layout_margin="8dp"
             android:layout_weight="0.45"
-            tools:src="@tools:sample/avatars[1]" />
+            tools:src="@drawable/fondo_item_listado" />
 
         <LinearLayout
             android:layout_width="0dp"

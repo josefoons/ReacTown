@@ -26,4 +26,11 @@
     <string name="btnVolver">Volver</string>
     <string name="btnInfoRecyVolver">Volver</string>
     <string name="menuPanelUsuario">Editar Usuario</string>
+    <string name="PanelUsuarioTitulo1">Cambiar Correo</string>
+    <string name="panelUsuarioTitulo2">Cambiar Contraseña</string>
+    <string name="panelUsuarioExplicacionContraseña">Al darle al boton se enviará un correo electronico a tu cuenta, y se cerrara la sesion.</string>
+    <string name="panelUsuarioExplicacionCorreo">Al darle al boton se se cambiará el correo electronico, y se cerrara la sesion.</string>
+    <string name="btnPanelUsuarioPassword">Cambio Contraseña</string>
+    <string name="etPanelUsuarioCorreo">Introduce un correo nuevo</string>
+    <string name="btnPanelUsuarioCorreo">Cambiar Correo</string>
 </resources>
