@@ -1,17 +1,18 @@
 package es.josefons.reactown;
 
 public class Usuario {
-    String id, name, correo;
+    String id, name, correo, img;
     int permiso;
 
     public Usuario() {
     }
 
-    public Usuario(String id, String name, String correo, int permiso) {
+    public Usuario(String id, String name, String correo, int permiso, String img) {
         this.id = id;
         this.name = name;
         this.correo = correo;
         this.permiso = permiso;
+        this.img = img;
     }
 
     public String getId() {
@@ -44,5 +45,13 @@ public class Usuario {
 
     public void setPermiso(int permiso) {
         this.permiso = permiso;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 }

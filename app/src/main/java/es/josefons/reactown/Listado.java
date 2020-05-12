@@ -1,7 +1,12 @@
 package es.josefons.reactown;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -20,18 +25,33 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Listado extends Fragment {
 
@@ -40,7 +60,13 @@ public class Listado extends Fragment {
     private FirebaseDatabase database;
     private TextView tvInformacionUsuarioListado;
     private Usuario usuario;
+    int Gallary_intent = 2000;
+    Uri imagenUri;
+    StorageTask mUploadTask;
+    StorageReference mStorageRef;
+    DatabaseReference mDatabaseRef;
 
+    ImageButton btnImagenMain;
     RecyclerView recyclerView;
     ItemListadoAdapter itemListadoAdapter;
     List<ItemListado> listadoList;
@@ -90,6 +116,7 @@ public class Listado extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        btnImagenMain = view.findViewById(R.id.btnImagenMain);
         tvInformacionUsuarioListado = view.findViewById(R.id.tvInformacionUsuarioListado);
         getUserInfo();
 
@@ -134,6 +161,82 @@ public class Listado extends Fragment {
         });
 
         /* Recycler */
+
+        mStorageRef = FirebaseStorage.getInstance().getReference("imgPerfil");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+
+        btnImagenMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, Gallary_intent);
+            }
+        });
+    }
+
+    private void subirImagenPerfil(){
+        if(imagenUri != null) {
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(imagenUri));
+
+            mUploadTask = fileReference.putFile(imagenUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(getContext(), "Subida correctamente", Toast.LENGTH_SHORT).show();
+                            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    updateUser(uri);
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), "Subida fallida", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+    }
+
+    private void updateUser(final Uri uri) {
+        final Uri aux = uri;
+        mDatabaseRef.child("Users").child(mAuth.getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Map<String, Object> valor = new HashMap<String, Object>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            valor.put(snapshot.getKey(), snapshot.getValue());
+                        }
+
+                        valor.put("imgPerfil", aux.toString());
+                        mDatabaseRef.child("Users").child(mAuth.getCurrentUser().getUid()).updateChildren(valor);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(getContext(), "Error al actualizar datos", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private String getFileExtension(Uri uri) {
+        //Obtener file extension
+        ContentResolver cR = getActivity().getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode,data);
+        if(requestCode == Gallary_intent && resultCode == Activity.RESULT_OK) {
+            imagenUri = data.getData();
+            btnImagenMain.setImageURI(imagenUri);
+            subirImagenPerfil();
+        }
     }
 
     @Override
@@ -155,7 +258,7 @@ public class Listado extends Fragment {
 
     private void getUserInfo(){
         String UserId = mAuth.getCurrentUser().getUid();
-        usuario = new Usuario(UserId, "None", "None", 0);
+        usuario = new Usuario(UserId, "None", "None", 0, "None");
         usuario.setId(UserId);
         mDatabase.child("Users").child(UserId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -169,6 +272,16 @@ public class Listado extends Fragment {
                      usuario.setName(name);
                      usuario.setCorreo(correo);
                      usuario.setPermiso(perm);
+
+                     if (dataSnapshot.child("imgPerfil").exists()) {
+                         usuario.setImg(dataSnapshot.child("imgPerfil").getValue().toString());
+                         Picasso.get()
+                                 .load(dataSnapshot.child("imgPerfil").getValue().toString())
+                                 .placeholder(R.drawable.fondo_item_listado)
+                                 .centerCrop()
+                                 .fit()
+                                 .into(btnImagenMain);
+                     }
                  }
             }
 
