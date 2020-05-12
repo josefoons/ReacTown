@@ -176,7 +176,8 @@ public class Listado extends Fragment {
 
     private void subirImagenPerfil(){
         if(imagenUri != null) {
-            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(imagenUri));
+            //Damos el mismo nombre siempre para que se sustituya solo la imagen.
+            StorageReference fileReference = mStorageRef.child("perfil_" + mAuth.getCurrentUser().getUid() + "." + getFileExtension(imagenUri));
 
             mUploadTask = fileReference.putFile(imagenUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -210,7 +211,6 @@ public class Listado extends Fragment {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             valor.put(snapshot.getKey(), snapshot.getValue());
                         }
-
                         valor.put("imgPerfil", aux.toString());
                         mDatabaseRef.child("Users").child(mAuth.getCurrentUser().getUid()).updateChildren(valor);
                     }
