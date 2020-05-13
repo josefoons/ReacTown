@@ -78,6 +78,10 @@ public class InfoRecycler extends Fragment {
         volver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                titulo.setText("");
+                autor.setText("");
+                desc.setText("");
+                imgTotal.setImageURI(null);
                 Navigation.findNavController(getView()).navigate(R.id.volverMainRecycler);
             }
         });
@@ -88,20 +92,23 @@ public class InfoRecycler extends Fragment {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                titulo.setText(dataSnapshot.child("propuestaNombre").getValue().toString());
-                autor.setText(dataSnapshot.child("propuestaUsuario").getValue().toString());
-                desc.setText(dataSnapshot.child("propuestaDescripcion").getValue().toString());
-                Picasso.get()
-                        .load(dataSnapshot.child("propuestaImagen").getValue().toString())
-                        .placeholder(R.drawable.placeholder_loading)
-                        .centerCrop()
-                        .fit()
-                        .into(imgTotal);
+                if(dataSnapshot.exists()){
+                    titulo.setText(dataSnapshot.child("propuestaNombre").getValue().toString());
+                    autor.setText(dataSnapshot.child("propuestaUsuario").getValue().toString());
+                    desc.setText(dataSnapshot.child("propuestaDescripcion").getValue().toString());
+                    Picasso.get()
+                            .load(dataSnapshot.child("propuestaImagen").getValue().toString())
+                            .placeholder(R.drawable.placeholder_loading)
+                            .centerCrop()
+                            .fit()
+                            .into(imgTotal);
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
+                //System.out.println("The read failed: " + databaseError.getCode());
+
             }
         });
     }
