@@ -34,4 +34,5 @@
     <string name="etPanelUsuarioCorreo">Introduce un correo nuevo</string>
     <string name="btnPanelUsuarioCorreo">Cambiar Correo</string>
     <string name="recyclerView">No Datos</string>
+    <string name="mDeleteAdmin">Delete</string>
 </resources>

@@ -11,23 +11,32 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 
 public class InfoRecycler extends Fragment {
     private String ID_TRAIDO = "";
+    private int PERM_TRAIDO = 0;
+    private String nombreImagen = "";
     private ImageView imgTotal;
     private TextView titulo, autor, desc;
     private Button volver;
@@ -44,6 +53,7 @@ public class InfoRecycler extends Fragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             ID_TRAIDO = bundle.getString("id", "");
+            PERM_TRAIDO = bundle.getInt("perm", 0);
         }
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -53,6 +63,7 @@ public class InfoRecycler extends Fragment {
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -102,16 +113,63 @@ public class InfoRecycler extends Fragment {
                             .centerCrop()
                             .fit()
                             .into(imgTotal);
+                    nombreImagen = dataSnapshot.child("propuestaImagen").getValue().toString();
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                //System.out.println("The read failed: " + databaseError.getCode());
-
+                System.out.println("The read failed: " + databaseError.getCode());
             }
         });
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        if(PERM_TRAIDO == 1){
+            inflater.inflate(R.menu.admin_menu, menu);
+        }
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.mDeleteAdmin){
+            borrarPost();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void borrarPost(){
+        DatabaseReference ref = database.getReference().child("itemListado").child(ID_TRAIDO);
+        ref.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                borrarImagen();
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println(e.getMessage());
+            }
+        });
+        Navigation.findNavController(getView()).navigate(R.id.volverMainRecycler);
+    }
+
+    private void borrarImagen(){
+        StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(nombreImagen);
+        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                System.out.println("Imagen borrada");
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("Error al borrar.");
+            }
+        });
+    }
 }

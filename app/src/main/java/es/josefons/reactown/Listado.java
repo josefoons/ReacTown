@@ -156,6 +156,7 @@ public class Listado extends Fragment {
                 Bundle datos = new Bundle();
                 String aux = listadoList.get(recyclerView.getChildAdapterPosition(v)).getId();
                 datos.putString("id", aux);
+                datos.putInt("perm", usuario.getPermiso());
                 Navigation.findNavController(getView()).navigate(R.id.infoRecycler, datos);
             }
         });
