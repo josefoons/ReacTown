@@ -13,6 +13,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import es.josefons.reactown.objetos.ItemListado;
+
 public class ItemListadoAdapter extends RecyclerView.Adapter<ItemListadoAdapter.ItemListadoViewHolder> implements View.OnClickListener{
 
     private List<ItemListado> listado;

@@ -4,6 +4,9 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -70,8 +73,10 @@ public class MainFragment extends Fragment {
                 email = etCorreo.getText().toString();
                 password = etPass.getText().toString();
 
-                if(!email.isEmpty() && !password.isEmpty()){
-                    loginUser();
+                if(checkInternet()){
+                    if(!email.isEmpty() && !password.isEmpty()){
+                        loginUser();
+                    }
                 } else {
                     Toast.makeText(getView().getContext(), "Completa los campos", Toast.LENGTH_SHORT).show();
                 }
@@ -81,14 +86,18 @@ public class MainFragment extends Fragment {
         textoRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.mainToRegistro);
+                if(checkInternet()){
+                    Navigation.findNavController(v).navigate(R.id.mainToRegistro);
+                }
             }
         });
 
         textoOlvidado.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.irRecuperar);
+                if(checkInternet()){
+                    Navigation.findNavController(v).navigate(R.id.irRecuperar);
+                }
             }
         });
     }
@@ -98,10 +107,8 @@ public class MainFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    //TODO Aqui el boton de ir a la pantalla principal cuando estas logued
                     Navigation.findNavController(getView()).navigate(R.id.loginCompleto);
                 } else {
-
                     Toast.makeText(getView().getContext(), "Fallo al loguear", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -121,6 +128,17 @@ public class MainFragment extends Fragment {
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+    }
 
+
+    private boolean checkInternet(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            return true;
+        } else {
+            Toast.makeText(getContext(), "NO INTERNET. Revisa la conexion", Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 }

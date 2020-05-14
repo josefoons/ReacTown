@@ -1,4 +1,4 @@
-package es.josefons.reactown;
+package es.josefons.reactown.objetos;
 
 public class Usuario {
     String id, name, correo, img;

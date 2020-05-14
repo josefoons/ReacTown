@@ -1,4 +1,4 @@
-package es.josefons.reactown;
+package es.josefons.reactown.objetos;
 
 public class UploadItemListado {
     private String propuestaNombre;
