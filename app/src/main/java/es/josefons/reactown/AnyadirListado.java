@@ -98,6 +98,7 @@ public class AnyadirListado extends Fragment {
         });
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode,data);
@@ -107,6 +108,11 @@ public class AnyadirListado extends Fragment {
         }
     }
 
+    /**
+     * Funcion para obtener la extension de la imagen y poderla subir con su extension correcta.
+     * @param uri Resultado de la imagen
+     * @return devuelve el varlor de la imagen
+     */
     private String getFileExtension(Uri uri) {
         //Obtener file extension
         ContentResolver cR = getActivity().getContentResolver();
@@ -114,6 +120,12 @@ public class AnyadirListado extends Fragment {
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
+    /**
+     * Mediante la comprobacion de los campos del formulario sube la imagen al storage y cuando esto es completado,
+     * inserta el enlace de la imagen a la base de datos para asi poderla cargar.
+     * Tambien se ha creado una barra de carga para la subida de la imagen. En el momento esta completada la subida,
+     * se procede a redireccionar al usuario al main.
+     */
     private void uploadFile() {
         if(imagenUri != null && !etNombreSugerencia.getText().toString().isEmpty() && !etDescripcionSugerencia.getText().toString().isEmpty()) {
             StorageReference fileReference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(imagenUri));

@@ -72,6 +72,11 @@ public class PanelUsuario extends Fragment {
         });
     }
 
+    /**
+     * Cambiar el correo del usuario mediante el sistema automatico de Firebase. Se cierra sesion para asi poder
+     * forzar al usuario a iniciar sesion de nuevo.
+     * @param v
+     */
     private void cambioCorreo(View v) {
         if(!etPanelUsuarioCorreo.getText().toString().isEmpty()){
             AlertDialog alertbox = new AlertDialog.Builder(v.getContext())
@@ -115,6 +120,11 @@ public class PanelUsuario extends Fragment {
         }
     }
 
+    /**
+     * Funcion unicamente dedicada al cambio de contraseña. Se cerrara sesion para que el usuario pueda
+     * iniciar con la nueva contraseña.
+     * @param v
+     */
     private void cambioPass(View v){
         AlertDialog alertbox = new AlertDialog.Builder(v.getContext())
                 .setMessage("¿Quieres cambiar contraseña?")

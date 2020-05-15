@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -95,6 +96,10 @@ public class InfoRecycler extends Fragment {
         });
     }
 
+    /**
+     * Carga la informacion del apartado mediante el ID que se trae del main. Este comprueba que si existe
+     * y si por lo contrario no existe, te devuelve al main.
+     */
     private void cargarInfo(){
         DatabaseReference ref = database.getReference("itemListado/" + ID_TRAIDO);
         ref.addValueEventListener(new ValueEventListener() {
@@ -111,6 +116,9 @@ public class InfoRecycler extends Fragment {
                             .fit()
                             .into(imgTotal);
                     nombreImagen = dataSnapshot.child("propuestaImagen").getValue().toString();
+                } else {
+                    Toast.makeText(getContext(), "Error al cargar la solicitud", Toast.LENGTH_SHORT).show();
+                    Navigation.findNavController(getView()).navigate(R.id.volverMainRecycler);
                 }
             }
 
@@ -137,6 +145,10 @@ public class InfoRecycler extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * El borrado de post solop tendran acceso los usuarios que tengan el rol de administrador dados
+     * desde el control de usuario en la web de firebase.
+     */
     private void borrarPost(){
         DatabaseReference ref = database.getReference().child("itemListado").child(ID_TRAIDO);
         ref.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -154,6 +166,10 @@ public class InfoRecycler extends Fragment {
         Navigation.findNavController(getView()).navigate(R.id.volverMainRecycler);
     }
 
+    /**
+     * Funcion unicamente dedicada al borrado de la imagen cuando un administrador borra el post.
+     * Busca la ID de esta y la borra del almacenamiento
+     */
     private void borrarImagen(){
         StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(nombreImagen);
         photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {

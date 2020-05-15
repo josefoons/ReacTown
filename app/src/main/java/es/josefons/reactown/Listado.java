@@ -173,6 +173,10 @@ public class Listado extends Fragment {
         });
     }
 
+    /**
+     * Funcion dedicada a subir la imagen de perfil que el usuario quiera y "linkearla" al usuario en su
+     * base de datos. Esta imagen se le pondra el mismo nombre asi se sustituira automaticamente en el almacenamiento
+     */
     private void subirImagenPerfil(){
         if(imagenUri != null) {
             //Damos el mismo nombre siempre para que se sustituya solo la imagen.
@@ -200,6 +204,10 @@ public class Listado extends Fragment {
         }
     }
 
+    /**
+     * Cuando un usuario sube por primera vez una imagen, el campo no existe, y por ello se tiene que crear
+     * @param uri
+     */
     private void updateUser(final Uri uri) {
         final Uri aux = uri;
         mDatabaseRef.child("Users").child(mAuth.getCurrentUser().getUid())
@@ -221,6 +229,11 @@ public class Listado extends Fragment {
                 });
     }
 
+    /**
+     * Funcion para obtener la extension
+     * @param uri
+     * @return
+     */
     private String getFileExtension(Uri uri) {
         //Obtener file extension
         ContentResolver cR = getActivity().getContentResolver();
@@ -255,6 +268,9 @@ public class Listado extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Obtener los valores del usuario para utilizarlos
+     */
     private void getUserInfo(){
         String UserId = mAuth.getCurrentUser().getUid();
         usuario = new Usuario(UserId, "None", "None", 0, "None");

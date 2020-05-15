@@ -118,6 +118,11 @@ public class RegisterFragment extends Fragment {
         });
     }
 
+    /**
+     * Funcion de cifrado de la contraseña
+     * @param base
+     * @return
+     */
     private static String sha256(String base) {
         try{
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
