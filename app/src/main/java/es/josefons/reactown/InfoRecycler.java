@@ -118,7 +118,7 @@ public class InfoRecycler extends Fragment {
                     nombreImagen = dataSnapshot.child("propuestaImagen").getValue().toString();
                 } else {
                     Toast.makeText(getContext(), "Error al cargar la solicitud", Toast.LENGTH_SHORT).show();
-                    Navigation.findNavController(getView()).navigate(R.id.volverMainRecycler);
+                    //Navigation.findNavController(getView()).navigate(R.id.volverMainRecycler);
                 }
             }
 
