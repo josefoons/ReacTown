@@ -83,28 +83,21 @@ public class PanelUsuario extends Fragment {
                     .setMessage("¿Quieres cambiar el correo?")
                     .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
-                            mAuth.sendPasswordResetEmail(mAuth.getCurrentUser().getEmail())
+                            FirebaseUser actualUser = mAuth.getCurrentUser();
+                            actualUser.updateEmail(etPanelUsuarioCorreo.getText().toString())
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                FirebaseUser actualUser = mAuth.getCurrentUser();
-                                                actualUser.updateEmail(etPanelUsuarioCorreo.getText().toString())
-                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                Toast.makeText(getContext(), "Correo cambiado.", Toast.LENGTH_LONG).show();
-                                                                Handler handler = new Handler();
-                                                                handler.postDelayed(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        mAuth.signOut();
-                                                                        Navigation.findNavController(getView()).navigate(R.id.panelUsuarioPassword);
-                                                                    }
-                                                                }, 1500);
-                                                            }
-                                                        });
-                                            }
+                                            updateEnBaseDeDatos(etPanelUsuarioCorreo.getText().toString());
+                                            Toast.makeText(getContext(), "Correo cambiado.", Toast.LENGTH_LONG).show();
+                                            Handler handler = new Handler();
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    mAuth.signOut();
+                                                    Navigation.findNavController(getView()).navigate(R.id.panelUsuarioPassword);
+                                                }
+                                            }, 1500);
                                         }
                                     });
                         }
@@ -156,5 +149,10 @@ public class PanelUsuario extends Fragment {
                 })
                 .show();
 
+    }
+
+    private void updateEnBaseDeDatos(String correo) {
+        DatabaseReference updateData = FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid());
+        updateData.child("correo").setValue(correo);
     }
 }
