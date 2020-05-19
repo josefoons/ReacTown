@@ -46,7 +46,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:gravity="center_horizontal|top"
-                android:text="Usuario" />
+                android:text="Usuario"
+                android:textAllCaps="true" />
         </LinearLayout>
     </LinearLayout>
 
@@ -62,4 +63,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <TextView
+        android:id="@+id/noDatos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foregroundGravity="center"
+        android:gravity="center"
+        android:text="@string/noDatos"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerView"
+        app:layout_constraintStart_toStartOf="@+id/recyclerView"
+        app:layout_constraintTop_toTopOf="@+id/recyclerView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

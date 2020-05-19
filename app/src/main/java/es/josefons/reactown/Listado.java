@@ -68,6 +68,7 @@ public class Listado extends Fragment {
     RecyclerView recyclerView;
     ItemListadoAdapter itemListadoAdapter;
     List<ItemListado> listadoList;
+    TextView noDatos;
 
     public Listado() {
         // Required empty public constructor
@@ -116,6 +117,7 @@ public class Listado extends Fragment {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         btnImagenMain = view.findViewById(R.id.btnImagenMain);
         tvInformacionUsuarioListado = view.findViewById(R.id.tvInformacionUsuarioListado);
+        noDatos = view.findViewById(R.id.noDatos);
         getUserInfo();
 
         /* Recycler */
@@ -132,19 +134,25 @@ public class Listado extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listadoList.removeAll(listadoList);
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    ItemListado aux = new ItemListado();
-                    aux.setId(snapshot.getKey());
-                    aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
-                    aux.setName(snapshot.child("propuestaNombre").getValue().toString());
-                    listadoList.add(aux);
+                if(dataSnapshot.exists()){
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        ItemListado aux = new ItemListado();
+                        aux.setId(snapshot.getKey());
+                        aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
+                        aux.setName(snapshot.child("propuestaNombre").getValue().toString());
+                        listadoList.add(aux);
+                    }
                 }
-                itemListadoAdapter.notifyDataSetChanged();
+
+                if(listadoList.size() != 0){
+                    noDatos.setVisibility(View.GONE);
+                    itemListadoAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                System.out.println(databaseError.getMessage());
             }
         });
 

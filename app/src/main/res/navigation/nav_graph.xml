@@ -15,7 +15,8 @@
             app:destination="@id/registerFragment" />
         <action
             android:id="@+id/loginCompleto"
-            app:destination="@id/listado" />
+            app:destination="@id/listado"
+            app:enterAnim="@anim/nav_default_enter_anim" />
         <action
             android:id="@+id/irRecuperar"
             app:destination="@id/recuperarPassword" />

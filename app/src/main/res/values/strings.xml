@@ -35,4 +35,5 @@
     <string name="btnPanelUsuarioCorreo">Cambiar Correo</string>
     <string name="recyclerView">No Datos</string>
     <string name="mDeleteAdmin">Delete</string>
+    <string name="noDatos">No Datos</string>
 </resources>
