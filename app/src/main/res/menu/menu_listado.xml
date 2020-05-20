@@ -15,4 +15,7 @@
     <item
         android:id="@+id/menuPanelUsuario"
         android:title="@string/menuPanelUsuario" />
+    <item
+        android:id="@+id/mInfoApp"
+        android:title="@string/mInfoApp" />
 </menu>

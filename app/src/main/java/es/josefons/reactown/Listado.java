@@ -271,6 +271,7 @@ public class Listado extends Fragment {
             case R.id.menuLogOut: mAuth.signOut();  Navigation.findNavController(getView()).navigate(R.id.logout); break;
             case R.id.menuAddList:  Navigation.findNavController(getView()).navigate(R.id.anyadirItem);; break;
             case R.id.menuPanelUsuario: Navigation.findNavController(getView()).navigate(R.id.irPanelUsuario); break;
+            case R.id.mInfoApp: Navigation.findNavController(getView()).navigate(R.id.ir_Informacion); break;
         }
 
         return super.onOptionsItemSelected(item);

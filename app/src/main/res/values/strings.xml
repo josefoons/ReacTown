@@ -36,4 +36,8 @@
     <string name="recyclerView">No Datos</string>
     <string name="mDeleteAdmin">Delete</string>
     <string name="noDatos">No Datos</string>
+    <string name="creadoPor">Creado por Jose Fons</string>
+    <string name="descripcionApp">Creada para proyecto DAM 2020. Codigo Libre.</string>
+    <string name="linkGit">github.com/josefoons/ReacTown</string>
+    <string name="mInfoApp">Info</string>
 </resources>
