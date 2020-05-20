@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -73,8 +74,7 @@ public class PanelUsuario extends Fragment {
     }
 
     /**
-     * Cambiar el correo del usuario mediante el sistema automatico de Firebase. Se cierra sesion para asi poder
-     * forzar al usuario a iniciar sesion de nuevo.
+     * Cambiar el correo del usuario mediante el sistema automatico de Firebase.
      * @param v
      */
     private void cambioCorreo(View v) {
@@ -94,17 +94,22 @@ public class PanelUsuario extends Fragment {
                                             handler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    mAuth.signOut();
-                                                    Navigation.findNavController(getView()).navigate(R.id.panelUsuarioPassword);
+                                                    //mAuth.signOut();
+                                                    Navigation.findNavController(getView()).navigate(R.id.volverPanelUsuario);
                                                 }
                                             }, 1500);
                                         }
-                                    });
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "No se ha podido actualizar", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
-                            //
+                            etPanelUsuarioCorreo.setText("");
                         }
                     })
                     .show();
@@ -139,7 +144,12 @@ public class PanelUsuario extends Fragment {
                                             }, 1500);
                                         }
                                     }
-                                });
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getContext(), "Fallo en actualizar la contraseña", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
