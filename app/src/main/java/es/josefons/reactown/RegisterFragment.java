@@ -33,6 +33,7 @@ public class RegisterFragment extends Fragment {
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
+    private View VISTA_GENERAL;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -51,7 +52,7 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        VISTA_GENERAL = container;
         return inflater.inflate(R.layout.fragment_register, container, false);
     }
 
@@ -107,9 +108,9 @@ public class RegisterFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<Void> task2) {
                             if(task2.isSuccessful()) {
-                                Navigation.findNavController(getView()).navigate(R.id.registroCompleto);
+                                Navigation.findNavController(VISTA_GENERAL).navigate(R.id.registroCompleto);
                             } else {
-                                Toast.makeText(getView().getContext(), "Fallo al registrar", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(VISTA_GENERAL.getContext(), "Fallo al registrar", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

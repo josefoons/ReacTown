@@ -26,7 +26,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.iid.Registrar;
 
 import es.josefons.reactown.R;
 
@@ -41,6 +40,7 @@ public class MainFragment extends Fragment {
     private String password = "";
 
     private FirebaseAuth mAuth;
+    private View VISTA_GENERAL;
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -50,6 +50,7 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        VISTA_GENERAL = container;
         return inflater.inflate(R.layout.main_fragment, container, false);
     }
 
@@ -78,7 +79,7 @@ public class MainFragment extends Fragment {
                         loginUser();
                     }
                 } else {
-                    Toast.makeText(getView().getContext(), "Completa los campos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VISTA_GENERAL.getContext(), "Completa los campos", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -107,9 +108,9 @@ public class MainFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Navigation.findNavController(getView()).navigate(R.id.loginCompleto);
+                    Navigation.findNavController(VISTA_GENERAL).navigate(R.id.loginCompleto);
                 } else {
-                    Toast.makeText(getView().getContext(), "Fallo al loguear", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VISTA_GENERAL.getContext(), "Fallo al loguear", Toast.LENGTH_SHORT).show();
                 }
             }
         });
