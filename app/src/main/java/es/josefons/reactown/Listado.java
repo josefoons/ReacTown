@@ -64,6 +64,7 @@ public class Listado extends Fragment {
     StorageReference mStorageRef;
     DatabaseReference mDatabaseRef;
 
+    MenuItem mListaUsuarios;
     ImageButton btnImagenMain;
     RecyclerView recyclerView;
     ItemListadoAdapter itemListadoAdapter;
@@ -262,16 +263,22 @@ public class Listado extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-            inflater.inflate(R.menu.menu_listado, menu);
+        inflater.inflate(R.menu.menu_listado, menu);
+        mListaUsuarios = menu.findItem(R.id.mListaUsuarios);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        Bundle mochila = new Bundle();
+        mochila.putInt("perm", usuario.getPermiso());
+
         switch (item.getItemId()){
             case R.id.menuLogOut: mAuth.signOut();  Navigation.findNavController(getView()).navigate(R.id.logout); break;
             case R.id.menuAddList:  Navigation.findNavController(getView()).navigate(R.id.anyadirItem);; break;
             case R.id.menuPanelUsuario: Navigation.findNavController(getView()).navigate(R.id.irPanelUsuario); break;
             case R.id.mInfoApp: Navigation.findNavController(getView()).navigate(R.id.ir_Informacion); break;
+            case R.id.mListaUsuarios: Navigation.findNavController(getView()).navigate(R.id.ir_ListaUsuario); break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -305,6 +312,11 @@ public class Listado extends Fragment {
                                  .centerCrop()
                                  .fit()
                                  .into(btnImagenMain);
+                     }
+
+                     if(usuario.getPermiso() == 0){
+                         mListaUsuarios.setEnabled(false);
+                         mListaUsuarios.setVisible(false);
                      }
                  }
             }

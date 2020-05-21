@@ -50,6 +50,9 @@
         <action
             android:id="@+id/ir_Informacion"
             app:destination="@id/informacion" />
+        <action
+            android:id="@+id/ir_ListaUsuario"
+            app:destination="@id/listaUsuarios" />
     </fragment>
     <fragment
         android:id="@+id/anyadirListado"
@@ -97,6 +100,15 @@
         tools:layout="@layout/fragment_informacion" >
         <action
             android:id="@+id/volver_informacion"
+            app:destination="@id/listado" />
+    </fragment>
+    <fragment
+        android:id="@+id/listaUsuarios"
+        android:name="es.josefons.reactown.ListaUsuarios"
+        android:label="fragment_lista_usuarios"
+        tools:layout="@layout/fragment_lista_usuarios" >
+        <action
+            android:id="@+id/volver_ListaUsuario"
             app:destination="@id/listado" />
     </fragment>
 </navigation>

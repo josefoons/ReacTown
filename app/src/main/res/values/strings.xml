@@ -40,4 +40,11 @@
     <string name="descripcionApp">Creada para proyecto DAM 2020. Codigo Libre.</string>
     <string name="linkGit">github.com/josefoons/ReacTown</string>
     <string name="mInfoApp">Info</string>
+    <string name="mListaUsuarios">Lista Usuarios</string>
+    <string name="listaUsuarios_Titulo">Lista Usuario</string>
+    <string name="listaUsuarios_Descripcion">Hola señor Administrador, esta en una zona delicada de la aplicacion, aqui estan todos los usuarios, aqui podra administrarlos. Todo lo que haga aqui perjudicara a el resto de la aplicacion, asi que vaya con cuidado.</string>
+    <string name="listaUsuarios_botonVolver">VOLVER</string>
+    <string name="listaUsuarioVentana_Descripcion">Elige que hacer</string>
+    <string name="listaUsuarioVentana_Permiso">Permiso</string>
+    <string name="listaUsuarioVentana_Borrar">Borrar</string>
 </resources>
