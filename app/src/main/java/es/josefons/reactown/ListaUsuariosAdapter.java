@@ -40,6 +40,7 @@ public class ListaUsuariosAdapter extends RecyclerView.Adapter<ListaUsuariosAdap
     public void onBindViewHolder(ListaUsuarioViewHolder holder, int position) {
         holder.nombre.setText(listado.get(position).getCorreo());
         if(listado.get(position).getPermiso() == 1) {
+            holder.permiso.setVisibility(View.VISIBLE);
             holder.permiso.setImageResource(R.drawable.ic_rank);
         } else {
             holder.permiso.setVisibility(View.INVISIBLE);

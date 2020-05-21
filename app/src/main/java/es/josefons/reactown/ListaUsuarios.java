@@ -47,6 +47,7 @@ public class ListaUsuarios extends Fragment {
     private ListaUsuariosAdapter listaUsuariosAdapter;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
+    private int permUsuarioClick;
     private String idUsuarioClick;
 
 
@@ -84,6 +85,37 @@ public class ListaUsuarios extends Fragment {
         recyclerListado.setItemAnimator(new DefaultItemAnimator());
         recyclerListado.setAdapter(listaUsuariosAdapter);
 
+        cargarRecycler();
+
+        listaUsuariosAdapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int itemPosition = recyclerListado.getChildLayoutPosition(v);
+                idUsuarioClick = listaUsuarios.get(itemPosition).getId();
+                permUsuarioClick = listaUsuarios.get(itemPosition).getPermiso();
+
+                AlertDialog alertbox = new AlertDialog.Builder(v.getContext())
+                        .setMessage("¿Quieres cambiar el permiso?")
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                if(permUsuarioClick ==  0){
+                                    mDatabase.child("Users").child(idUsuarioClick).child("perm").setValue(1);
+                                } else {
+                                    mDatabase.child("Users").child(idUsuarioClick).child("perm").setValue(0);
+                                }
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                //
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    private void cargarRecycler(){
         mDatabase.child("Users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -106,17 +138,6 @@ public class ListaUsuarios extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 System.out.println(databaseError.getMessage());
-            }
-        });
-
-        listaUsuariosAdapter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int itemPosition = recyclerListado.getChildLayoutPosition(v);
-                idUsuarioClick = listaUsuarios.get(itemPosition).getId();
-
-                // HACER PREGUNTA DE SI QUIERO HACERLO Y COMPROBAR RANGO ACTUAL
-                mDatabase.child("Users").child(idUsuarioClick).child("perm").setValue(0);
             }
         });
     }
