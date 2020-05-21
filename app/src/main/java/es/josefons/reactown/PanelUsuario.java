@@ -28,10 +28,11 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class PanelUsuario extends Fragment {
 
-    Button btnPanelUsuarioCorreo, btnPanelUsuarioPassword;
+    Button btnPanelUsuarioCorreo, btnPanelUsuarioPassword, btnPanelUsuarioBorrar;
     EditText etPanelUsuarioCorreo;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
+    FirebaseUser usuario;
 
     public PanelUsuario() {
         // Required empty public constructor
@@ -54,9 +55,11 @@ public class PanelUsuario extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         btnPanelUsuarioCorreo = view.findViewById(R.id.btnPanelUsuarioCorreo);
         btnPanelUsuarioPassword = view.findViewById(R.id.btnPanelUsuarioPassword);
+        btnPanelUsuarioBorrar = view.findViewById(R.id.btnPanelUsuarioBorrar);
         etPanelUsuarioCorreo = view.findViewById(R.id.etPanelUsuarioCorreo);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        usuario = FirebaseAuth.getInstance().getCurrentUser();
 
         btnPanelUsuarioPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +72,13 @@ public class PanelUsuario extends Fragment {
             @Override
             public void onClick(View v) {
                 cambioCorreo(v);
+            }
+        });
+
+        btnPanelUsuarioBorrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                borrarCuenta(v);
             }
         });
     }
@@ -161,8 +171,31 @@ public class PanelUsuario extends Fragment {
 
     }
 
+    /**
+     * Actualizar el correo dentro de la REalTime cuando cambias el mail.
+     * @param correo
+     */
     private void updateEnBaseDeDatos(String correo) {
         DatabaseReference updateData = FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid());
         updateData.child("correo").setValue(correo);
+    }
+
+    /**
+     * Borrar el usuario
+     * @param v
+     */
+    private void borrarCuenta(View v){
+        usuario.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getContext(), "Usuario borrado. Adios!", Toast.LENGTH_SHORT).show();
+                    mDatabase.child("Users").child(usuario.getUid()).removeValue();
+                    mAuth.signOut();
+                    Navigation.findNavController(getView()).navigate(R.id.panelUsuarioPassword);
+                }
+            }
+        });
+
     }
 }

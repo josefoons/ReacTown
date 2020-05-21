@@ -75,6 +75,9 @@ public class ListaUsuarios extends Fragment {
         cargarListadoUsuarios();
     }
 
+    /**
+     * Funcion para cargar los datos en el RecyclerView y darle sus funciones
+     */
     private void cargarListadoUsuarios(){
         listaUsuarios = new ArrayList<>();
         recyclerListado = vista.findViewById(R.id.listaUsuario_recycler);
@@ -115,6 +118,9 @@ public class ListaUsuarios extends Fragment {
         });
     }
 
+    /**
+     * Funcion para obtener informacion desde Firebase
+     */
     private void cargarRecycler(){
         mDatabase.child("Users").addValueEventListener(new ValueEventListener() {
             @Override
