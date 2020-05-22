@@ -279,6 +279,14 @@ public class InfoRecycler extends Fragment {
                         todosVotos.add(snapshot.getKey());
                     }
                     totalVotos.setText("+" + todosVotos.size());
+                    // Comprobacion por si el usuario esta en dos dispositivos moviles y actualiza en los dos.
+                    if(todosVotos.size() > 0 &&todosVotos.contains(FirebaseAuth.getInstance().getCurrentUser().getUid().trim())){
+                        usuarioHaVotado = true;
+                        btnLike.setImageResource(R.drawable.ic_voto_on);
+                    } else {
+                        usuarioHaVotado = false;
+                        btnLike.setImageResource(R.drawable.ic_voto_off);
+                    }
                 }
             }
 
