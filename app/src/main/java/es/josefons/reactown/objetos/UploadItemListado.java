@@ -1,10 +1,14 @@
 package es.josefons.reactown.objetos;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 public class UploadItemListado {
     private String propuestaNombre;
     private String propuestaUsuario;
     private String propuestaDescripcion;
     private String propuestaImagen;
+    private Map<String, String> propuestaVotos;
 
     public UploadItemListado() {
     }
@@ -14,6 +18,14 @@ public class UploadItemListado {
         this.propuestaUsuario = propuestaUsuario;
         this.propuestaDescripcion = propuestaDescripcion;
         this.propuestaImagen = propuestaImagen;
+    }
+
+    public UploadItemListado(String propuestaNombre, String propuestaUsuario, String propuestaDescripcion, String propuestaImagen, Map<String, String> propuestaVotos) {
+        this.propuestaNombre = propuestaNombre;
+        this.propuestaUsuario = propuestaUsuario;
+        this.propuestaDescripcion = propuestaDescripcion;
+        this.propuestaImagen = propuestaImagen;
+        this.propuestaVotos = propuestaVotos;
     }
 
     public String getPropuestaNombre() {
@@ -47,5 +59,14 @@ public class UploadItemListado {
     public void setPropuestaImagen(String propuestaImagen) {
         this.propuestaImagen = propuestaImagen;
     }
+
+    public Map<String, String> getPropuestaVotos() {
+        return propuestaVotos;
+    }
+
+    public void setPropuestaVotos(Map<String, String> propuestaVotos) {
+        this.propuestaVotos = propuestaVotos;
+    }
 }
+
 

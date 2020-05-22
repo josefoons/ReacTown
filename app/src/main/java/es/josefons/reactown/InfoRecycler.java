@@ -15,12 +15,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,16 +35,25 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import es.josefons.reactown.objetos.ItemListado;
+
 
 public class InfoRecycler extends Fragment {
     private String ID_TRAIDO = "";
     private int PERM_TRAIDO = 0;
     private String nombreImagen = "";
     private ImageView imgTotal;
-    private TextView titulo, autor, desc;
-    private Button volver;
+    private TextView titulo, autor, desc, totalVotos;
+    private ImageButton btnLike;
     private DatabaseReference mDatabase;
     FirebaseDatabase database;
+    private ArrayList<String> todosVotos;
+    private Boolean usuarioHaVotado;
 
     public InfoRecycler() {
         // Required empty public constructor
@@ -57,7 +71,11 @@ public class InfoRecycler extends Fragment {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                //
+                /*titulo.setText("");
+                autor.setText("");
+                desc.setText("");
+                imgTotal.setImageURI(null);*/
+                Navigation.findNavController(getView()).navigate(R.id.volver_InfoRecycler);
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
@@ -75,25 +93,23 @@ public class InfoRecycler extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
+        todosVotos = new ArrayList<>();
 
         imgTotal = view.findViewById(R.id.infoRecyImagen);
         titulo = view.findViewById(R.id.infoRecyNombre);
         autor = view.findViewById(R.id.InfoRecyAutor);
         desc = view.findViewById(R.id.InfoRecyInformacion);
-        volver = view.findViewById(R.id.btnInfoRecyVolver);
+        btnLike = view.findViewById(R.id.infoRecyBtnVoto);
+        totalVotos = view.findViewById(R.id.InfoRecyContador);
 
-        cargarInfo();
-
-        volver.setOnClickListener(new View.OnClickListener() {
+        btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                titulo.setText("");
-                autor.setText("");
-                desc.setText("");
-                imgTotal.setImageURI(null);
-                Navigation.findNavController(getView()).navigate(R.id.volverMainRecycler);
+                votarPropuesta();
             }
         });
+
+        cargarInfo();
     }
 
     /**
@@ -116,9 +132,21 @@ public class InfoRecycler extends Fragment {
                             .fit()
                             .into(imgTotal);
                     nombreImagen = dataSnapshot.child("propuestaImagen").getValue().toString();
+                    for (DataSnapshot snapshot : dataSnapshot.child("propuestaVotos").getChildren()) {
+                        todosVotos.add(snapshot.getKey());
+                    }
+                    totalVotos.setText("+" + todosVotos.size());
+                    // Check si el usuario actual ha votado
+                    if(todosVotos.contains(FirebaseAuth.getInstance().getCurrentUser().getUid().trim())){
+                        usuarioHaVotado = true;
+                        btnLike.setImageResource(R.drawable.ic_voto_on);
+                    } else {
+                        usuarioHaVotado = false;
+                        btnLike.setImageResource(R.drawable.ic_voto_off);
+                    }
                 } else {
-                    Toast.makeText(getContext(), "Error al cargar la solicitud", Toast.LENGTH_SHORT).show();
-                    //Navigation.findNavController(getView()).navigate(R.id.volverMainRecycler);
+                    Toast.makeText(getContext(), "Proyecto borrado. Volviendo...", Toast.LENGTH_SHORT).show();
+                    Navigation.findNavController(getView()).navigate(R.id.volver_InfoRecycler);
                 }
             }
 
@@ -127,6 +155,7 @@ public class InfoRecycler extends Fragment {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
+        actualizarVotos();
     }
 
     @Override
@@ -163,7 +192,7 @@ public class InfoRecycler extends Fragment {
                 System.out.println(e.getMessage());
             }
         });
-        Navigation.findNavController(getView()).navigate(R.id.volverMainRecycler);
+        Navigation.findNavController(getView()).navigate(R.id.volver_InfoRecycler);
     }
 
     /**
@@ -182,6 +211,80 @@ public class InfoRecycler extends Fragment {
             @Override
             public void onFailure(@NonNull Exception e) {
                 System.out.println("Error al borrar.");
+            }
+        });
+    }
+
+    /**
+     * Sistema de votar la propuesta. Se coneccta a la base de datos para enviar el Like o quitarselo.
+     * Utiliza tambien otra funcion de actualizar para obtener los votos.
+     */
+    private void votarPropuesta(){
+        if(usuarioHaVotado){
+            // SI ha votado, y lo quita
+            DatabaseReference updateData = FirebaseDatabase.getInstance().getReference("itemListado")
+                    .child(ID_TRAIDO).child("propuestaVotos").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            updateData.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    btnLike.setImageResource(R.drawable.ic_voto_off);
+                    usuarioHaVotado = false;
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getContext(), "Error al actualizar datos. Volviendo...", Toast.LENGTH_SHORT).show();
+                    Navigation.findNavController(getView()).navigate(R.id.volver_InfoRecycler);
+                }
+            });
+        } else {
+            //NO ha votado, y lo pone
+            final DatabaseReference updateData = FirebaseDatabase.getInstance().getReference("itemListado")
+                    .child(ID_TRAIDO).child("propuestaVotos");
+            updateData.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Map<String, Object> valor = new HashMap<String, Object>();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                valor.put(snapshot.getKey(), snapshot.getValue());
+                            }
+                            valor.put(FirebaseAuth.getInstance().getUid(), "yes");
+                            updateData.updateChildren(valor);
+                            usuarioHaVotado = true;
+                            btnLike.setImageResource(R.drawable.ic_voto_on);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(getContext(), "Error al actualizar datos. Volviendo...", Toast.LENGTH_SHORT).show();
+                            Navigation.findNavController(getView()).navigate(R.id.volver_InfoRecycler);
+                        }
+                    });
+        }
+        actualizarVotos();
+    }
+
+    /**
+     * Conectarse y obtener UNICAMENTE el valor del campo de votos.
+     */
+    private void actualizarVotos(){
+        DatabaseReference ref = database.getReference("itemListado/" + ID_TRAIDO);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    todosVotos.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.child("propuestaVotos").getChildren()) {
+                        todosVotos.add(snapshot.getKey());
+                    }
+                    totalVotos.setText("+" + todosVotos.size());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
             }
         });
     }

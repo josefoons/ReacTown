@@ -34,6 +34,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import es.josefons.reactown.objetos.UploadItemListado;
 
 public class AnyadirListado extends Fragment {
@@ -144,6 +149,9 @@ public class AnyadirListado extends Fragment {
                                     upload.setPropuestaDescripcion(etDescripcionSugerencia.getText().toString().trim());
                                     upload.setPropuestaImagen(uri.toString());
                                     upload.setPropuestaUsuario(user.getEmail());
+                                    Map<String, String> valor = new HashMap<String, String>();
+                                    valor.put(FirebaseAuth.getInstance().getUid().toString(), "yes");
+                                    upload.setPropuestaVotos(valor);
 
                                     String uploadId = mDatabaseRef.push().getKey();
                                     mDatabaseRef.child(uploadId).setValue(upload);

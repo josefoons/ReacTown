@@ -80,6 +80,9 @@
         <action
             android:id="@+id/volverMainRecycler"
             app:destination="@id/listado" />
+        <action
+            android:id="@+id/volver_InfoRecycler"
+            app:destination="@id/listado" />
     </fragment>
     <fragment
         android:id="@+id/panelUsuario"
