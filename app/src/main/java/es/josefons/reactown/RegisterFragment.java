@@ -97,6 +97,11 @@ public class RegisterFragment extends Fragment {
         });
     }
 
+    /**
+     * Registra al usuario en el sistema.
+     * @param correo Correo del campo de EditText
+     * @param pass Password del campo de EditText
+     */
     private void registrarUsuario(String correo, String pass){
         mAuth.createUserWithEmailAndPassword(correo, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override

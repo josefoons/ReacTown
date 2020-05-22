@@ -74,6 +74,10 @@ public class RecuperarPassword extends Fragment {
         });
     }
 
+    /**
+     * Comprobacion del estado en la red del sistema para dar opcion a la recuperacion
+     * @return Devuelve el valor dependiendo del estado
+     */
     private boolean checkInternet(){
         ConnectivityManager connectivityManager = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
@@ -85,6 +89,9 @@ public class RecuperarPassword extends Fragment {
         }
     }
 
+    /**
+     * Envia el correo de recuperacion
+     */
     private void recuperarPassword(){
         mAuth.getInstance().sendPasswordResetEmail(correo.getText().toString())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
