@@ -185,17 +185,29 @@ public class PanelUsuario extends Fragment {
      * @param v
      */
     private void borrarCuenta(View v){
-        usuario.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getContext(), "Usuario borrado. Adios!", Toast.LENGTH_SHORT).show();
-                    mDatabase.child("Users").child(usuario.getUid()).removeValue();
-                    mAuth.signOut();
-                    Navigation.findNavController(getView()).navigate(R.id.panelUsuarioPassword);
-                }
-            }
-        });
 
-    }
+        AlertDialog alertbox = new AlertDialog.Builder(v.getContext())
+                .setMessage("¿Estas seguro? Esta opcion es irreversible")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        usuario.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(getContext(), "Usuario borrado. Adios!", Toast.LENGTH_SHORT).show();
+                                    mDatabase.child("Users").child(usuario.getUid()).removeValue();
+                                    mAuth.signOut();
+                                    Navigation.findNavController(getView()).navigate(R.id.panelUsuarioPassword);
+                                }
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        //
+                    }
+                })
+                .show();
+            }
 }
