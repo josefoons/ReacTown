@@ -1,5 +1,8 @@
 package es.josefons.reactown;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -74,9 +77,13 @@ public class RegisterFragment extends Fragment {
                 String correo = etCorreo.getText().toString();
                 String pass = etPass.getText().toString();
 
-                if(!nombre.isEmpty() && !correo.isEmpty() && !pass.isEmpty()){
-                    if(pass.length()  >= 6) {
-                        registrarUsuario(correo, pass);
+                if(checkInternet()) {
+                    if(!nombre.isEmpty() && !correo.isEmpty() && !pass.isEmpty()){
+                        if(pass.length()  >= 6) {
+                            registrarUsuario(correo, pass);
+                        } else {
+                            Toast.makeText(getContext(), "Contraseña de 6 o mas digitos", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
@@ -116,6 +123,17 @@ public class RegisterFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private boolean checkInternet(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            return true;
+        } else {
+            Toast.makeText(getContext(), "NO INTERNET. Revisa la conexion", Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 
     /**
