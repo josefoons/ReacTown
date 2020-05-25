@@ -54,6 +54,7 @@ public class InfoRecycler extends Fragment {
     FirebaseDatabase database;
     private ArrayList<String> todosVotos;
     private Boolean usuarioHaVotado;
+    private View vista;
 
     public InfoRecycler() {
         // Required empty public constructor
@@ -85,6 +86,7 @@ public class InfoRecycler extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        vista = container;
         return inflater.inflate(R.layout.fragment_info_recycler, container, false);
     }
 
@@ -146,7 +148,10 @@ public class InfoRecycler extends Fragment {
                     }
                 } else {
                     Toast.makeText(getContext(), "Proyecto borrado. Volviendo...", Toast.LENGTH_SHORT).show();
-                    Navigation.findNavController(getView()).navigate(R.id.volver_InfoRecycler);
+                    if(Navigation.findNavController(vista).getCurrentDestination().getId() == R.id.infoRecycler) {
+                        Navigation.findNavController(vista).navigate(R.id.volver_InfoRecycler);
+                    }
+                    //Navigation.findNavController(vista).navigate(R.id.volver_InfoRecycler);
                 }
             }
 

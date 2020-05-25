@@ -22,8 +22,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import es.josefons.reactown.objetos.ItemListado;
 
 
 public class PanelUsuario extends Fragment {
@@ -99,6 +104,7 @@ public class PanelUsuario extends Fragment {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             updateEnBaseDeDatos(etPanelUsuarioCorreo.getText().toString());
+                                            cambiarAutorPost();
                                             Toast.makeText(getContext(), "Correo cambiado.", Toast.LENGTH_LONG).show();
                                             Handler handler = new Handler();
                                             handler.postDelayed(new Runnable() {
@@ -172,7 +178,7 @@ public class PanelUsuario extends Fragment {
     }
 
     /**
-     * Actualizar el correo dentro de la REalTime cuando cambias el mail.
+     * Actualizar el correo dentro de la RealTime cuando cambias el mail.
      * @param correo
      */
     private void updateEnBaseDeDatos(String correo) {
@@ -209,5 +215,37 @@ public class PanelUsuario extends Fragment {
                     }
                 })
                 .show();
+    }
+
+    /**
+     * Buscar todos los itemListado y cambiar el usuario
+     */
+    private void cambiarAutorPost(){
+        mDatabase.child("itemListado").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        cambiarAutorKey(snapshot.getKey());
+                    }
+                }
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println(databaseError.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Una vez obtenido el UID de los itemListados, se cambian.
+     * @param key
+     */
+    private void cambiarAutorKey(String key) {
+        DatabaseReference updateData = FirebaseDatabase.getInstance()
+                .getReference("itemListado").child(key);
+        updateData.child("propuestaUsuario").setValue(etPanelUsuarioCorreo.getText().toString());
+    }
+
 }
