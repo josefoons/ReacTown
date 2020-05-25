@@ -51,7 +51,6 @@
 
     <string-array name="filtros">
         <item>Todos</item>
-        <item>Mios</item>
         <item>Votados</item>
         <item>No Votados</item>
     </string-array>

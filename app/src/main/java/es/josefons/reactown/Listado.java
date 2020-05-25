@@ -39,6 +39,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -47,6 +48,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,31 +140,7 @@ public class Listado extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(itemListadoAdapter);
 
-        mDatabase.child("itemListado").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listadoList.removeAll(listadoList);
-                if(dataSnapshot.exists()){
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        ItemListado aux = new ItemListado();
-                        aux.setId(snapshot.getKey());
-                        aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
-                        aux.setName(snapshot.child("propuestaNombre").getValue().toString());
-                        listadoList.add(aux);
-                    }
-                }
-
-                if(listadoList.size() != 0){
-                    noDatos.setVisibility(View.GONE);
-                    itemListadoAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                System.out.println(databaseError.getMessage());
-            }
-        });
+        cargarRecyclerAll();
 
         itemListadoAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,6 +163,41 @@ public class Listado extends Fragment {
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, Gallary_intent);
+            }
+        });
+    }
+
+    /**
+     * Obtener todos los datos de Firebase sin ningun tipo de filtro.
+     */
+    private void cargarRecyclerAll() {
+        mDatabase.child("itemListado").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //listadoList.removeAll(listadoList);
+                listadoList.clear();
+                if(dataSnapshot.exists()){
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        ItemListado aux = new ItemListado();
+                        aux.setId(snapshot.getKey());
+                        aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
+                        aux.setName(snapshot.child("propuestaNombre").getValue().toString());
+                        listadoList.add(aux);
+                    }
+                }
+
+                if(listadoList.size() > 0){
+                    noDatos.setVisibility(View.GONE);
+                    itemListadoAdapter.notifyDataSetChanged();
+                } else {
+                    noDatos.setVisibility(View.VISIBLE);
+                    itemListadoAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println(databaseError.getMessage());
             }
         });
     }
@@ -335,6 +348,9 @@ public class Listado extends Fragment {
         });
     }
 
+    /**
+     * Cargar el selector de filtros y darle utilidad.
+     */
     private void cargarSelector(){
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.filtros, android.R.layout.simple_spinner_item);
@@ -343,11 +359,9 @@ public class Listado extends Fragment {
         selectorFiltros.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String text = parent.getItemAtPosition(position).toString();
                 switch (position) {
-                    case 0: /* listar todos */ break;
-                    case 1: /* listar mios */ break;
-                    case 2: /* listar votados */ break;
+                    case 0: cargarRecyclerAll(); break;
+                    case 2: soloVotados(); break;
                     case 3: /* listar no votados */ break;
                 }
             }
@@ -357,5 +371,18 @@ public class Listado extends Fragment {
                 //
             }
         });
+    }
+
+    private void soloVotados(){
+        List<ItemListado> aux = new ArrayList<>();
+        String currentID = mAuth.getUid();
+        for (int i=0; i < listadoList.size() ;i++) {
+            if(true){
+                aux.add(listadoList.get(i));
+            }
+        }
+        listadoList.clear();
+        Collections.copy(listadoList,aux);
+        itemListadoAdapter.notifyDataSetChanged();
     }
 }
