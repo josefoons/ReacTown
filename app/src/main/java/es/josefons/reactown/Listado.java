@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -76,7 +77,7 @@ public class Listado extends Fragment {
     ItemListadoAdapter itemListadoAdapter;
     List<ItemListado> listadoList;
     TextView noDatos;
-    Spinner selectorFiltros;
+    Button btnListadoFiltro;
 
     public Listado() {
         // Required empty public constructor
@@ -126,9 +127,8 @@ public class Listado extends Fragment {
         btnImagenMain = view.findViewById(R.id.btnImagenMain);
         tvInformacionUsuarioListado = view.findViewById(R.id.tvInformacionUsuarioListado);
         noDatos = view.findViewById(R.id.noDatos);
-        selectorFiltros = view.findViewById(R.id.selectorFiltros);
+        btnListadoFiltro = view.findViewById(R.id.btnListadoFiltro);
         getUserInfo();
-        cargarSelector();
 
         /* Recycler */
         listadoList = new ArrayList<>();
@@ -163,6 +163,13 @@ public class Listado extends Fragment {
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, Gallary_intent);
+            }
+        });
+
+        btnListadoFiltro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cambiaFiltro();
             }
         });
     }
@@ -349,40 +356,53 @@ public class Listado extends Fragment {
     }
 
     /**
-     * Cargar el selector de filtros y darle utilidad.
+     * Utilidad del boton para cambiar el filtro
      */
-    private void cargarSelector(){
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.filtros, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        selectorFiltros.setAdapter(adapter);
-        selectorFiltros.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    private void cambiaFiltro(){
+        String valor = btnListadoFiltro.getText().toString().trim();
+        if(valor.equals("Propios")){
+            sugerenciasPropias();
+            btnListadoFiltro.setText(R.string.btnListadoFiltroTodos);
+        } else if(valor.equals("Todos")) {
+            cargarRecyclerAll();
+            btnListadoFiltro.setText(R.string.btnListadoFiltroPropio);
+        }
+    }
+
+    /**
+     * Cargar sugerencias que el usuario ha creado.
+     */
+    private void sugerenciasPropias(){
+        mDatabase.child("itemListado").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0: cargarRecyclerAll(); break;
-                    case 2: soloVotados(); break;
-                    case 3: /* listar no votados */ break;
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listadoList.clear();
+                if(dataSnapshot.exists()){
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String actualAux = snapshot.child("propuestaUsuario").getValue().toString().trim();
+                        if(actualAux.equals(mAuth.getCurrentUser().getEmail().trim())) {
+                            ItemListado aux = new ItemListado();
+                            aux.setId(snapshot.getKey());
+                            aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
+                            aux.setName(snapshot.child("propuestaNombre").getValue().toString());
+                            listadoList.add(aux);
+                        }
+                    }
+                }
+
+                if(listadoList.size() > 0){
+                    noDatos.setVisibility(View.GONE);
+                    itemListadoAdapter.notifyDataSetChanged();
+                } else {
+                    noDatos.setVisibility(View.VISIBLE);
+                    itemListadoAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                //
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println(databaseError.getMessage());
             }
         });
-    }
-
-    private void soloVotados(){
-        List<ItemListado> aux = new ArrayList<>();
-        String currentID = mAuth.getUid();
-        for (int i=0; i < listadoList.size() ;i++) {
-            if(true){
-                aux.add(listadoList.get(i));
-            }
-        }
-        listadoList.clear();
-        Collections.copy(listadoList,aux);
-        itemListadoAdapter.notifyDataSetChanged();
     }
 }
