@@ -25,7 +25,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.josefons.reactown.adapters.ItemListadoAdapter;
 import es.josefons.reactown.objetos.ItemListado;
 import es.josefons.reactown.objetos.Usuario;
 
@@ -70,6 +74,7 @@ public class Listado extends Fragment {
     ItemListadoAdapter itemListadoAdapter;
     List<ItemListado> listadoList;
     TextView noDatos;
+    Spinner selectorFiltros;
 
     public Listado() {
         // Required empty public constructor
@@ -119,7 +124,9 @@ public class Listado extends Fragment {
         btnImagenMain = view.findViewById(R.id.btnImagenMain);
         tvInformacionUsuarioListado = view.findViewById(R.id.tvInformacionUsuarioListado);
         noDatos = view.findViewById(R.id.noDatos);
+        selectorFiltros = view.findViewById(R.id.selectorFiltros);
         getUserInfo();
+        cargarSelector();
 
         /* Recycler */
         listadoList = new ArrayList<>();
@@ -299,7 +306,7 @@ public class Listado extends Fragment {
                      String correo = dataSnapshot.child("correo").getValue().toString();
                      int perm = Integer.parseInt(dataSnapshot.child("perm").getValue().toString());
 
-                     tvInformacionUsuarioListado.setText(name);
+                     tvInformacionUsuarioListado.setText("Bienvenido, " + name.toUpperCase());
                      usuario.setName(name);
                      usuario.setCorreo(correo);
                      usuario.setPermiso(perm);
@@ -324,6 +331,30 @@ public class Listado extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+    }
+
+    private void cargarSelector(){
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.filtros, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        selectorFiltros.setAdapter(adapter);
+        selectorFiltros.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String text = parent.getItemAtPosition(position).toString();
+                switch (position) {
+                    case 0: /* listar todos */ break;
+                    case 1: /* listar mios */ break;
+                    case 2: /* listar votados */ break;
+                    case 3: /* listar no votados */ break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //
             }
         });
     }
