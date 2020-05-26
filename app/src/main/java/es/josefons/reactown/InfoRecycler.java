@@ -40,6 +40,7 @@ public class InfoRecycler extends Fragment {
     private String ID_TRAIDO = "";
     private int PERM_TRAIDO = 0;
     private String nombreImagen = "";
+    private String autorSugerencia;
     private ImageView imgTotal;
     private TextView titulo, autor, desc, totalVotos;
     private ImageButton btnLike;
@@ -60,6 +61,7 @@ public class InfoRecycler extends Fragment {
         if (bundle != null) {
             ID_TRAIDO = bundle.getString("id", "");
             PERM_TRAIDO = bundle.getInt("perm", 0);
+            autorSugerencia = bundle.getString("email", "");
         }
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -158,7 +160,8 @@ public class InfoRecycler extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        if(PERM_TRAIDO == 1){
+        String auxActual = FirebaseAuth.getInstance().getCurrentUser().getEmail().trim();
+        if(autorSugerencia.equals(auxActual) || PERM_TRAIDO == 1){
             inflater.inflate(R.menu.admin_menu, menu);
         }
     }

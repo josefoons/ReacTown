@@ -147,8 +147,10 @@ public class Listado extends Fragment {
             public void onClick(View v) {
                 Bundle datos = new Bundle();
                 String aux = listadoList.get(recyclerView.getChildAdapterPosition(v)).getId();
+                String autorAux = listadoList.get(recyclerView.getChildAdapterPosition(v)).getAutor();
                 datos.putString("id", aux);
                 datos.putInt("perm", usuario.getPermiso());
+                datos.putString("email", autorAux);
                 Navigation.findNavController(getView()).navigate(R.id.infoRecycler, datos);
             }
         });
@@ -189,6 +191,7 @@ public class Listado extends Fragment {
                         aux.setId(snapshot.getKey());
                         aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
                         aux.setName(snapshot.child("propuestaNombre").getValue().toString());
+                        aux.setAutor(snapshot.child("propuestaUsuario").getValue().toString());
                         listadoList.add(aux);
                     }
                 }
@@ -385,6 +388,7 @@ public class Listado extends Fragment {
                             aux.setId(snapshot.getKey());
                             aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
                             aux.setName(snapshot.child("propuestaNombre").getValue().toString());
+                            aux.setAutor(snapshot.child("propuestaUsuario").getValue().toString());
                             listadoList.add(aux);
                         }
                     }
