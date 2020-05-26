@@ -33,12 +33,6 @@ public class RecuperarPassword extends Fragment {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
-    public static RecuperarPassword newInstance(String param1, String param2) {
-        RecuperarPassword fragment = new RecuperarPassword();
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

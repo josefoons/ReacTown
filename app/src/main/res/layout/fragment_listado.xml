@@ -33,21 +33,23 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.5"
-                android:gravity="bottom|center_horizontal"
-                android:text="Bienvenido" />
-
-            <TextView
                 android:id="@+id/tvInformacionUsuarioListado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:gravity="center_horizontal|top"
+                android:layout_weight="0.75"
+                android:gravity="center"
                 android:text="Usuario"
-                android:textAllCaps="true" />
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btnListadoFiltro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_weight="0.25"
+                android:text="@string/btnListadoFiltroPropio" />
+
         </LinearLayout>
     </LinearLayout>
 

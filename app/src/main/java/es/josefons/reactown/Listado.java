@@ -25,7 +25,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +40,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -44,10 +49,12 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.josefons.reactown.adapters.ItemListadoAdapter;
 import es.josefons.reactown.objetos.ItemListado;
 import es.josefons.reactown.objetos.Usuario;
 
@@ -70,6 +77,7 @@ public class Listado extends Fragment {
     ItemListadoAdapter itemListadoAdapter;
     List<ItemListado> listadoList;
     TextView noDatos;
+    Button btnListadoFiltro;
 
     public Listado() {
         // Required empty public constructor
@@ -119,6 +127,7 @@ public class Listado extends Fragment {
         btnImagenMain = view.findViewById(R.id.btnImagenMain);
         tvInformacionUsuarioListado = view.findViewById(R.id.tvInformacionUsuarioListado);
         noDatos = view.findViewById(R.id.noDatos);
+        btnListadoFiltro = view.findViewById(R.id.btnListadoFiltro);
         getUserInfo();
 
         /* Recycler */
@@ -131,39 +140,17 @@ public class Listado extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(itemListadoAdapter);
 
-        mDatabase.child("itemListado").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listadoList.removeAll(listadoList);
-                if(dataSnapshot.exists()){
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        ItemListado aux = new ItemListado();
-                        aux.setId(snapshot.getKey());
-                        aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
-                        aux.setName(snapshot.child("propuestaNombre").getValue().toString());
-                        listadoList.add(aux);
-                    }
-                }
-
-                if(listadoList.size() != 0){
-                    noDatos.setVisibility(View.GONE);
-                    itemListadoAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                System.out.println(databaseError.getMessage());
-            }
-        });
+        cargarRecyclerAll();
 
         itemListadoAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle datos = new Bundle();
                 String aux = listadoList.get(recyclerView.getChildAdapterPosition(v)).getId();
+                String autorAux = listadoList.get(recyclerView.getChildAdapterPosition(v)).getAutor();
                 datos.putString("id", aux);
                 datos.putInt("perm", usuario.getPermiso());
+                datos.putString("email", autorAux);
                 Navigation.findNavController(getView()).navigate(R.id.infoRecycler, datos);
             }
         });
@@ -178,6 +165,49 @@ public class Listado extends Fragment {
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, Gallary_intent);
+            }
+        });
+
+        btnListadoFiltro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cambiaFiltro();
+            }
+        });
+    }
+
+    /**
+     * Obtener todos los datos de Firebase sin ningun tipo de filtro.
+     */
+    private void cargarRecyclerAll() {
+        mDatabase.child("itemListado").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //listadoList.removeAll(listadoList);
+                listadoList.clear();
+                if(dataSnapshot.exists()){
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        ItemListado aux = new ItemListado();
+                        aux.setId(snapshot.getKey());
+                        aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
+                        aux.setName(snapshot.child("propuestaNombre").getValue().toString());
+                        aux.setAutor(snapshot.child("propuestaUsuario").getValue().toString());
+                        listadoList.add(aux);
+                    }
+                }
+
+                if(listadoList.size() > 0){
+                    noDatos.setVisibility(View.GONE);
+                    itemListadoAdapter.notifyDataSetChanged();
+                } else {
+                    noDatos.setVisibility(View.VISIBLE);
+                    itemListadoAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println(databaseError.getMessage());
             }
         });
     }
@@ -299,7 +329,7 @@ public class Listado extends Fragment {
                      String correo = dataSnapshot.child("correo").getValue().toString();
                      int perm = Integer.parseInt(dataSnapshot.child("perm").getValue().toString());
 
-                     tvInformacionUsuarioListado.setText(name);
+                     tvInformacionUsuarioListado.setText("Bienvenido, " + name.toUpperCase());
                      usuario.setName(name);
                      usuario.setCorreo(correo);
                      usuario.setPermiso(perm);
@@ -324,6 +354,58 @@ public class Listado extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+    }
+
+    /**
+     * Utilidad del boton para cambiar el filtro
+     */
+    private void cambiaFiltro(){
+        String valor = btnListadoFiltro.getText().toString().trim();
+        if(valor.equals("Propios")){
+            sugerenciasPropias();
+            btnListadoFiltro.setText(R.string.btnListadoFiltroTodos);
+        } else if(valor.equals("Todos")) {
+            cargarRecyclerAll();
+            btnListadoFiltro.setText(R.string.btnListadoFiltroPropio);
+        }
+    }
+
+    /**
+     * Cargar sugerencias que el usuario ha creado.
+     */
+    private void sugerenciasPropias(){
+        mDatabase.child("itemListado").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listadoList.clear();
+                if(dataSnapshot.exists()){
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String actualAux = snapshot.child("propuestaUsuario").getValue().toString().trim();
+                        if(actualAux.equals(mAuth.getCurrentUser().getEmail().trim())) {
+                            ItemListado aux = new ItemListado();
+                            aux.setId(snapshot.getKey());
+                            aux.setIcon(snapshot.child("propuestaImagen").getValue().toString());
+                            aux.setName(snapshot.child("propuestaNombre").getValue().toString());
+                            aux.setAutor(snapshot.child("propuestaUsuario").getValue().toString());
+                            listadoList.add(aux);
+                        }
+                    }
+                }
+
+                if(listadoList.size() > 0){
+                    noDatos.setVisibility(View.GONE);
+                    itemListadoAdapter.notifyDataSetChanged();
+                } else {
+                    noDatos.setVisibility(View.VISIBLE);
+                    itemListadoAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println(databaseError.getMessage());
             }
         });
     }

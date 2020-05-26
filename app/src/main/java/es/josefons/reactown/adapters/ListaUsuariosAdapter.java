@@ -1,4 +1,4 @@
-package es.josefons.reactown;
+package es.josefons.reactown.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,11 +9,9 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
-import es.josefons.reactown.objetos.ItemListado;
+import es.josefons.reactown.R;
 import es.josefons.reactown.objetos.Usuario;
 
 public class ListaUsuariosAdapter extends RecyclerView.Adapter<ListaUsuariosAdapter.ListaUsuarioViewHolder> implements View.OnClickListener{
