@@ -33,6 +33,7 @@ public class RegisterFragment extends Fragment {
     private EditText etNombre, etCorreo, etPass;
     private Button btnRegistrar;
     private TextView alreadyAccount;
+    private View vista;
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
@@ -55,6 +56,7 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        vista = container;
         return inflater.inflate(R.layout.fragment_register, container, false);
     }
 
@@ -111,7 +113,7 @@ public class RegisterFragment extends Fragment {
                     Map<String, Object> map = new HashMap<>();
                     map.put("name", etNombre.getText().toString());
                     map.put("correo", etCorreo.getText().toString());
-                    map.put("password", sha256(etPass.getText().toString()));
+                    //map.put("password", sha256(etPass.getText().toString()));
                     map.put("perm", 0);
 
                     String id = mAuth.getCurrentUser().getUid();
@@ -119,9 +121,9 @@ public class RegisterFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<Void> task2) {
                             if(task2.isSuccessful()) {
-                                Navigation.findNavController(getView()).navigate(R.id.registroCompleto);
+                                Navigation.findNavController(vista).navigate(R.id.registroCompleto);
                             } else {
-                                Toast.makeText(getView().getContext(), "Fallo al registrar", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(vista.getContext(), "Fallo al registrar", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -141,11 +143,7 @@ public class RegisterFragment extends Fragment {
         }
     }
 
-    /**
-     * Funcion de cifrado de la contraseña
-     * @param base
-     * @return
-     */
+/*
     private static String sha256(String base) {
         try{
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -163,4 +161,5 @@ public class RegisterFragment extends Fragment {
             throw new RuntimeException(ex);
         }
     }
+*/
 }
