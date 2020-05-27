@@ -65,6 +65,7 @@ public class Listado extends Fragment {
     private FirebaseDatabase database;
     private TextView tvInformacionUsuarioListado;
     private Usuario usuario;
+    private View vista;
     int Gallary_intent = 2000;
     Uri imagenUri;
     StorageTask mUploadTask;
@@ -114,6 +115,7 @@ public class Listado extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        vista = container;
         return inflater.inflate(R.layout.fragment_listado, container, false);
     }
 
@@ -128,7 +130,11 @@ public class Listado extends Fragment {
         tvInformacionUsuarioListado = view.findViewById(R.id.tvInformacionUsuarioListado);
         noDatos = view.findViewById(R.id.noDatos);
         btnListadoFiltro = view.findViewById(R.id.btnListadoFiltro);
-        getUserInfo();
+        if(mAuth.getCurrentUser() != null){
+            getUserInfo();
+        } else {
+            Navigation.findNavController(vista).navigate(R.id.volver_InfoRecycler);
+        }
 
         /* Recycler */
         listadoList = new ArrayList<>();

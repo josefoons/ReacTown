@@ -22,22 +22,17 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import es.josefons.reactown.objetos.ItemListado;
 
 
 public class PanelUsuario extends Fragment {
 
-    Button btnPanelUsuarioCorreo, btnPanelUsuarioPassword, btnPanelUsuarioBorrar;
-    EditText etPanelUsuarioCorreo;
+    Button btnPanelUsuarioPassword, btnPanelUsuarioBorrar;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
     FirebaseUser usuario;
+    private View vista;
 
     public PanelUsuario() {
         // Required empty public constructor
@@ -51,6 +46,7 @@ public class PanelUsuario extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        vista = container;
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_panel_usuario, container, false);
     }
@@ -58,10 +54,8 @@ public class PanelUsuario extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        btnPanelUsuarioCorreo = view.findViewById(R.id.btnPanelUsuarioCorreo);
         btnPanelUsuarioPassword = view.findViewById(R.id.btnPanelUsuarioPassword);
         btnPanelUsuarioBorrar = view.findViewById(R.id.btnPanelUsuarioBorrar);
-        etPanelUsuarioCorreo = view.findViewById(R.id.etPanelUsuarioCorreo);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         usuario = FirebaseAuth.getInstance().getCurrentUser();
@@ -73,13 +67,6 @@ public class PanelUsuario extends Fragment {
             }
         });
 
-        btnPanelUsuarioCorreo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cambioCorreo(v);
-            }
-        });
-
         btnPanelUsuarioBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,10 +75,7 @@ public class PanelUsuario extends Fragment {
         });
     }
 
-    /**
-     * Cambiar el correo del usuario mediante el sistema automatico de Firebase.
-     * @param v
-     */
+/*
     private void cambioCorreo(View v) {
         if(!etPanelUsuarioCorreo.getText().toString().isEmpty()){
             AlertDialog alertbox = new AlertDialog.Builder(v.getContext())
@@ -99,7 +83,7 @@ public class PanelUsuario extends Fragment {
                     .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
                             FirebaseUser actualUser = mAuth.getCurrentUser();
-                            actualUser.updateEmail(etPanelUsuarioCorreo.getText().toString())
+                            actualUser.updateEmail(etPanelUsuarioCorreo.getText().toString().trim())
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
@@ -110,8 +94,9 @@ public class PanelUsuario extends Fragment {
                                             handler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    //mAuth.signOut();
-                                                    Navigation.findNavController(getView()).navigate(R.id.volverPanelUsuario);
+                                                    ///mAuth.signOut();
+                                                    //Navigation.findNavController(vista).navigate(R.id.panelUsuarioPassword);
+                                                    Navigation.findNavController(vista).navigate(R.id.volverPanelUsuario);
                                                 }
                                             }, 1500);
                                         }
@@ -133,7 +118,7 @@ public class PanelUsuario extends Fragment {
             Toast.makeText(v.getContext(), "Completa el correo para cambiarlo", Toast.LENGTH_SHORT).show();
         }
     }
-
+*/
     /**
      * Funcion unicamente dedicada al cambio de contraseña. Se cerrara sesion para que el usuario pueda
      * iniciar con la nueva contraseña.
@@ -155,7 +140,7 @@ public class PanelUsuario extends Fragment {
                                                 @Override
                                                 public void run() {
                                                     mAuth.signOut();
-                                                    Navigation.findNavController(getView()).navigate(R.id.panelUsuarioPassword);
+                                                    Navigation.findNavController(vista).navigate(R.id.panelUsuarioPassword);
                                                 }
                                             }, 1500);
                                         }
@@ -177,15 +162,12 @@ public class PanelUsuario extends Fragment {
 
     }
 
-    /**
-     * Actualizar el correo dentro de la RealTime cuando cambias el mail.
-     * @param correo
-     */
+/*
     private void updateEnBaseDeDatos(String correo) {
         DatabaseReference updateData = FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid());
         updateData.child("correo").setValue(correo);
     }
-
+*/
     /**
      * Borrar el usuario
      * @param v
@@ -203,7 +185,7 @@ public class PanelUsuario extends Fragment {
                                     Toast.makeText(getContext(), "Usuario borrado. Adios!", Toast.LENGTH_SHORT).show();
                                     mDatabase.child("Users").child(usuario.getUid()).removeValue();
                                     mAuth.signOut();
-                                    Navigation.findNavController(getView()).navigate(R.id.panelUsuarioPassword);
+                                    Navigation.findNavController(vista).navigate(R.id.panelUsuarioPassword);
                                 }
                             }
                         });
@@ -217,16 +199,17 @@ public class PanelUsuario extends Fragment {
                 .show();
     }
 
-    /**
-     * Buscar todos los itemListado y cambiar el usuario
-     */
+/*
     private void cambiarAutorPost(){
         mDatabase.child("itemListado").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        cambiarAutorKey(snapshot.getKey());
+                        String autor = snapshot.child("propuestaUsuario").getValue().toString().trim();
+                        if(autor.equals(correoActual)){
+                            cambiarAutorKey(snapshot.getKey());
+                        }
                     }
                 }
             }
@@ -238,14 +221,11 @@ public class PanelUsuario extends Fragment {
         });
     }
 
-    /**
-     * Una vez obtenido el UID de los itemListados, se cambian.
-     * @param key
-     */
+
     private void cambiarAutorKey(String key) {
         DatabaseReference updateData = FirebaseDatabase.getInstance()
                 .getReference("itemListado").child(key);
         updateData.child("propuestaUsuario").setValue(etPanelUsuarioCorreo.getText().toString());
     }
-
+*/
 }

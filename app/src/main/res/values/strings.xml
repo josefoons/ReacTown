@@ -50,5 +50,6 @@
     <string name="panelUsuarioTitulo3">¡CUIDADO! Si aprietas este boton, procederas a borrar tu cuenta y no podras volver a acceder al sistema a menos que te vuelvas a registrar. Piensa lo que haces.</string>
     <string name="btnListadoFiltroPropio">Propios</string>
     <string name="btnListadoFiltroTodos">Todos</string>
+    <string name="panelUsuarioTituloCuenta">¡BORRADO!</string>
 
 </resources>
