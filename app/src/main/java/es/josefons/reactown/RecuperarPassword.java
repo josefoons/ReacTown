@@ -25,9 +25,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class RecuperarPassword extends Fragment {
 
-    EditText correo;
-    Button btnVolver, btnRecuperar;
+    private EditText correo;
+    private Button btnVolver, btnRecuperar;
     private FirebaseAuth mAuth;
+    private View vista;
 
     public RecuperarPassword() {
         // Required empty public constructor
@@ -41,6 +42,7 @@ public class RecuperarPassword extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        vista = container;
         return inflater.inflate(R.layout.fragment_recuperar_password, container, false);
     }
 
@@ -87,7 +89,7 @@ public class RecuperarPassword extends Fragment {
      * Envia el correo de recuperacion
      */
     private void recuperarPassword(){
-        mAuth.getInstance().sendPasswordResetEmail(correo.getText().toString())
+        FirebaseAuth.getInstance().sendPasswordResetEmail(correo.getText().toString())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -98,7 +100,7 @@ public class RecuperarPassword extends Fragment {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Navigation.findNavController(getView()).navigate(R.id.volverRecuperar);
+                                    Navigation.findNavController(vista).navigate(R.id.volverRecuperar);
                                 }
                             }, 1500);
                         }
