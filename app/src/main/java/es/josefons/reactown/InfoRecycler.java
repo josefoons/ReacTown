@@ -44,8 +44,7 @@ public class InfoRecycler extends Fragment {
     private ImageView imgTotal;
     private TextView titulo, autor, desc, totalVotos;
     private ImageButton btnLike;
-    private DatabaseReference mDatabase;
-    FirebaseDatabase database;
+    private FirebaseDatabase database;
     private ArrayList<String> todosVotos;
     private Boolean usuarioHaVotado;
     private View vista;
@@ -67,10 +66,6 @@ public class InfoRecycler extends Fragment {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                /*titulo.setText("");
-                autor.setText("");
-                desc.setText("");
-                imgTotal.setImageURI(null);*/
                 Navigation.findNavController(vista).navigate(R.id.volver_InfoRecycler);
             }
         };
@@ -88,7 +83,6 @@ public class InfoRecycler extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
         todosVotos = new ArrayList<>();
 
@@ -192,7 +186,7 @@ public class InfoRecycler extends Fragment {
                 System.out.println(e.getMessage());
             }
         });
-        Navigation.findNavController(getView()).navigate(R.id.volver_InfoRecycler);
+        Navigation.findNavController(vista).navigate(R.id.volver_InfoRecycler);
     }
 
     /**
@@ -235,7 +229,7 @@ public class InfoRecycler extends Fragment {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(getContext(), "Error al actualizar datos. Volviendo...", Toast.LENGTH_SHORT).show();
-                    Navigation.findNavController(getView()).navigate(R.id.volver_InfoRecycler);
+                    Navigation.findNavController(vista).navigate(R.id.volver_InfoRecycler);
                 }
             });
         } else {
@@ -258,7 +252,7 @@ public class InfoRecycler extends Fragment {
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             Toast.makeText(getContext(), "Error al actualizar datos. Volviendo...", Toast.LENGTH_SHORT).show();
-                            Navigation.findNavController(getView()).navigate(R.id.volver_InfoRecycler);
+                            Navigation.findNavController(vista).navigate(R.id.volver_InfoRecycler);
                         }
                     });
         }
@@ -292,7 +286,7 @@ public class InfoRecycler extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
+                System.out.println("The read failed: " + databaseError.getMessage());
             }
         });
     }
