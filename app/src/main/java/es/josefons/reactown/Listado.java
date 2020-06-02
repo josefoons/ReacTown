@@ -25,11 +25,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +37,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -62,23 +58,22 @@ public class Listado extends Fragment {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    private FirebaseDatabase database;
     private TextView tvInformacionUsuarioListado;
     private Usuario usuario;
     private View vista;
-    int Gallary_intent = 2000;
-    Uri imagenUri;
-    StorageTask mUploadTask;
-    StorageReference mStorageRef;
-    DatabaseReference mDatabaseRef;
+    private int Gallary_intent = 2000;
+    private Uri imagenUri;
+    private StorageTask mUploadTask;
+    private StorageReference mStorageRef;
+    private DatabaseReference mDatabaseRef;
 
-    MenuItem mListaUsuarios;
-    ImageButton btnImagenMain;
-    RecyclerView recyclerView;
-    ItemListadoAdapter itemListadoAdapter;
-    List<ItemListado> listadoList;
-    TextView noDatos;
-    Button btnListadoFiltro;
+    private MenuItem mListaUsuarios;
+    private ImageButton btnImagenMain;
+    private RecyclerView recyclerView;
+    private ItemListadoAdapter itemListadoAdapter;
+    private List<ItemListado> listadoList;
+    private TextView noDatos;
+    private Button btnListadoFiltro;
 
     public Listado() {
         // Required empty public constructor
@@ -91,12 +86,12 @@ public class Listado extends Fragment {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                AlertDialog alertbox = new AlertDialog.Builder(getView().getContext())
+                AlertDialog alertbox = new AlertDialog.Builder(vista.getContext())
                         .setMessage("¿Quieres salir de la cuenta?")
                         .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
                                 mAuth.signOut();
-                                Navigation.findNavController(getView()).navigate(R.id.logout);
+                                Navigation.findNavController(vista).navigate(R.id.logout);
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -157,7 +152,7 @@ public class Listado extends Fragment {
                 datos.putString("id", aux);
                 datos.putInt("perm", usuario.getPermiso());
                 datos.putString("email", autorAux);
-                Navigation.findNavController(getView()).navigate(R.id.infoRecycler, datos);
+                Navigation.findNavController(vista).navigate(R.id.infoRecycler, datos);
             }
         });
 
@@ -310,11 +305,11 @@ public class Listado extends Fragment {
         mochila.putInt("perm", usuario.getPermiso());
 
         switch (item.getItemId()){
-            case R.id.menuLogOut: mAuth.signOut();  Navigation.findNavController(getView()).navigate(R.id.logout); break;
-            case R.id.menuAddList:  Navigation.findNavController(getView()).navigate(R.id.anyadirItem);; break;
-            case R.id.menuPanelUsuario: Navigation.findNavController(getView()).navigate(R.id.irPanelUsuario); break;
-            case R.id.mInfoApp: Navigation.findNavController(getView()).navigate(R.id.ir_Informacion); break;
-            case R.id.mListaUsuarios: Navigation.findNavController(getView()).navigate(R.id.ir_ListaUsuario); break;
+            case R.id.menuLogOut: mAuth.signOut(); Navigation.findNavController(vista).navigate(R.id.logout); break;
+            case R.id.menuAddList: Navigation.findNavController(vista).navigate(R.id.anyadirItem); break;
+            case R.id.menuPanelUsuario: Navigation.findNavController(vista).navigate(R.id.irPanelUsuario); break;
+            case R.id.mInfoApp: Navigation.findNavController(vista).navigate(R.id.ir_Informacion); break;
+            case R.id.mListaUsuarios: Navigation.findNavController(vista).navigate(R.id.ir_ListaUsuario); break;
         }
 
         return super.onOptionsItemSelected(item);
