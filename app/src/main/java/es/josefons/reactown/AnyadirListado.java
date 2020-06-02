@@ -34,27 +34,24 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import es.josefons.reactown.objetos.UploadItemListado;
 
 public class AnyadirListado extends Fragment {
     //https://www.youtube.com/watch?v=lPfQN-Sfnjw
 
-    FirebaseAuth mAuth;
-    StorageReference mStorageRef;
-    DatabaseReference mDatabaseRef;
-    StorageTask mUploadTask;
-    Uri imagenUri;
+    private StorageReference mStorageRef;
+    private DatabaseReference mDatabaseRef;
+    private StorageTask mUploadTask;
+    private Uri imagenUri;
 
-    int Gallary_intent = 2000;
-    Button btnInsertarDescripcion;
-    ImageView imagenSubir;
-    EditText etNombreSugerencia, etDescripcionSugerencia;
-    ProgressBar procesoSubida;
+    private int Gallary_intent = 2000;
+    private ImageView imagenSubir;
+    private EditText etNombreSugerencia, etDescripcionSugerencia;
+    private ProgressBar procesoSubida;
+    private View vista;
 
     public AnyadirListado() {
     }
@@ -67,18 +64,18 @@ public class AnyadirListado extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        vista = container;
         return inflater.inflate(R.layout.fragment_anyadir_listado, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
-        btnInsertarDescripcion = getView().findViewById(R.id.btnInsertarDescripcion);
-        imagenSubir = getView().findViewById(R.id.imagenSugerenciaSubir);
-        etNombreSugerencia = getView().findViewById(R.id.etNombreSugerencia);
-        etDescripcionSugerencia = getView().findViewById(R.id.etDescripcionSugerencia);
-        procesoSubida = getView().findViewById(R.id.procesoSubida);
+        Button btnInsertarDescripcion = view.findViewById(R.id.btnInsertarDescripcion);
+        imagenSubir = view.findViewById(R.id.imagenSugerenciaSubir);
+        etNombreSugerencia = view.findViewById(R.id.etNombreSugerencia);
+        etDescripcionSugerencia = view.findViewById(R.id.etDescripcionSugerencia);
+        procesoSubida = view.findViewById(R.id.procesoSubida);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("imgItems");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("itemListado");
@@ -162,7 +159,9 @@ public class AnyadirListado extends Fragment {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Navigation.findNavController(getView()).navigate(R.id.AnyadidoCompletado);
+                                    if(Navigation.findNavController(vista).getCurrentDestination().getId() == R.id.anyadirListado) {
+                                        Navigation.findNavController(vista).navigate(R.id.AnyadidoCompletado);
+                                    }
                                 }
                             }, 1500);
 
