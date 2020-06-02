@@ -35,8 +35,8 @@ public class RegisterFragment extends Fragment {
     private TextView alreadyAccount;
     private View vista;
 
-    FirebaseAuth mAuth;
-    DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     public RegisterFragment() {
         // Required empty public constructor
