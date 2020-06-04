@@ -36,6 +36,7 @@ public class MainFragment extends Fragment {
     private EditText etCorreo, etPass;
     private Button btnLogin;
     private TextView textoRegistro, textoOlvidado;
+    private View vista;
 
     private String email = "";
     private String password = "";
@@ -50,6 +51,7 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        vista = container;
         return inflater.inflate(R.layout.main_fragment, container, false);
     }
 
@@ -78,7 +80,7 @@ public class MainFragment extends Fragment {
                         loginUser();
                     }
                 } else {
-                    Toast.makeText(getView().getContext(), "Completa los campos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(vista.getContext(), "Completa los campos", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -107,9 +109,15 @@ public class MainFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Navigation.findNavController(getView()).navigate(R.id.loginCompleto);
+                    if (mAuth.getCurrentUser().isEmailVerified()) {
+                        if(Navigation.findNavController(vista).getCurrentDestination().getId() == R.id.mainFragment){
+                            Navigation.findNavController(vista).navigate(R.id.loginCompleto);
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Autentifica tu cuenta en el correo.", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(getView().getContext(), "Fallo al loguear", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(vista.getContext(), "Fallo al loguear", Toast.LENGTH_SHORT).show();
                 }
             }
         });

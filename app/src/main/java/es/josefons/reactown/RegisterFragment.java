@@ -121,7 +121,16 @@ public class RegisterFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<Void> task2) {
                             if(task2.isSuccessful()) {
-                                Navigation.findNavController(vista).navigate(R.id.registroCompleto);
+                                mAuth.getCurrentUser().sendEmailVerification()
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Toast.makeText(getContext(), "Activa tu cuenta en el correo electronico.", Toast.LENGTH_SHORT).show();
+                                                if(Navigation.findNavController(vista).getCurrentDestination().getId() == R.id.registerFragment){
+                                                    Navigation.findNavController(vista).navigate(R.id.registroCompleto);
+                                                }
+                                            }
+                                        });
                             } else {
                                 Toast.makeText(vista.getContext(), "Fallo al registrar", Toast.LENGTH_SHORT).show();
                             }
